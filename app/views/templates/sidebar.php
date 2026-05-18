@@ -1,11 +1,15 @@
 <section class="wrapper">
     <aside id="sidebar">
         <header>
-            <a href="#hero" style="all: inherit; cursor: pointer;">
-                <i class="ph ph-graduation-cap bg-icon-primary" style="font-size: 20px; color: #fff;"></i>
+            <a href="#hero" style="all: inherit; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                <?php if (isset($data["konfigurasi"]["logo"])): ?>
+                    <img src="<?= Constant::DIRNAME . 'asset/img/' . $data["konfigurasi"]["logo"] ?>" alt="Logo" style="width: 40px; height: 40px; object-fit: contain;">
+                <?php else: ?>
+                    <i class="ph ph-graduation-cap bg-icon-primary" style="font-size: 20px; color: #fff;"></i>
+                <?php endif; ?>
                 <div class="title-group">
-                    <h1 class="poppins-semibold">EXADASA</h1>
-                    <p class="poppins-light">SMART EXAM PLATFORM</p>
+                    <h1 class="poppins-semibold"><?= $data["konfigurasi"]["nama_sistem"] ?? "SMART EXAM PLATFORM" ?></h1>
+                    <p class="poppins-light"><?= $data["konfigurasi"]["nama_sekolah"] ?? "SMART EXAM PLATFORM" ?></p>
                 </div>
             </a>
         </header>

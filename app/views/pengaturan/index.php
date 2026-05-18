@@ -31,7 +31,7 @@
                     </div>
                     <div class="form-input">
                         <label class="poppins-medium">Footer</label>
-                        <textarea id="footer" name="copyright" class="poppins-regular"><?= $data['konfigurasi']['copyright'] ?? ''; ?></textarea>
+                        <textarea id="footer" name="copyright" class="poppins-regular"><?= $data['konfigurasi']['copyright'] ?? 'Copyright © 2023 SMANDASA. All rights reserved.'; ?></textarea>
                     </div>
                 </div>
             </section>
@@ -43,52 +43,35 @@
                 <div class="form-group">
                     <div class="form-input">
                         <label for="name-sistem" class="poppins-medium">Logo Aplikasi</label>
-                        <div class="logo-sistem">
-                            <i class="ph ph-building-office" id="icon-placeholder-logo" style="all: unset"></i>
-                            <img id="preview-logo" src="" alt="Pratinjau Logo" style="display: none; max-width: 100%; max-height: 40px; object-fit: contain;">
+                        <div class="logo-sistem" style="<?= empty($data['konfigurasi']['logo']) ? "background: var(--color-gradient-primary);" : "" ?>">
+                            <input type="hidden" name="logo_old" value="<?= $data['konfigurasi']['logo'] ?>">
+                            <img id="preview-logo" src="<?= Constant::DIRNAME."asset/img/".$data['konfigurasi']['logo'] ?>" alt="Pratinjau Logo" style="display: <?= isset($data['konfigurasi']['logo']) ? 'block' : 'none' ?>; width: 100%; object-fit: contain; aspect-ratio: 1 / 1;">                          
+                            <i class="ph ph-building-office" id="icon-placeholder-logo" style="all: unset; display: <?= isset($data['konfigurasi']['logo']) ? 'none' : 'block' ?>"></i>
                         </div>
                         <div class="btn-upload">
                             <i class="ph ph-upload" style="all: unset;"></i>
                             <span>Upload Logo</span>
-                            <input type="file" id="upload-logo" style="position: absolute; inset: 0; opacity: 0;" name="logo" class="poppins-regular">
+                            <input type="file" id="upload-logo" style="position: absolute; inset: 0; opacity: 0;" name="logo_new" class="poppins-regular">
                         </div>
                     </div>
                     <div class="form-input">
                         <label for="name-sistem" class="poppins-medium">Icon Aplikasi</label>
-                        <div class="logo-sistem">
-                            <i class="ph ph-building-office" id="icon-placeholder-icon" style="all: unset"></i>
-                            <img id="preview-icon" src="" alt="Pratinjau Icon" style="display: none; max-width: 100%; max-height: 40px; object-fit: contain;">
+                        <div class="logo-sistem" style="<?= empty($data['konfigurasi']['icon']) ? "background: var(--color-gradient-primary);" : "" ?>">
+                            <input type="hidden" name="icon_old" value="<?= $data['konfigurasi']['icon'] ?>">
+                            <img id="preview-icon" src="<?= Constant::DIRNAME."asset/img/".$data['konfigurasi']['icon'] ?>" alt="Pratinjau Icon" style="display: <?= isset($data['konfigurasi']['icon']) ? 'block' : 'none' ?>; width: 100%; object-fit: contain; aspect-ratio: 1 / 1;">
+                            <i class="ph ph-building-office" id="icon-placeholder-icon" style="all: unset; display: <?= isset($data['konfigurasi']['icon']) ? 'none' : 'block' ?>"></i>
                         </div>
                         <div class="btn-upload" >
                             <i class="ph ph-upload" style="all: unset;"></i>
                             <span>Upload Icon</span>
-                            <input type="file" id="upload-icon" style="position: absolute; inset: 0; opacity: 0;" name="icon" class="poppins-regular">
-                        </div>
-                    </div>
-                    <div class="form-input">
-                        <label for="name-sistem" class="poppins-medium">Warna Utama</label>
-                        <div class="color-sistem">
-                            <div class="box-color active-color" style="background-color: blue;">
-                                <input type="radio" name="color-sistem" value="blue">
-                            </div>
-                            <div class="box-color" style="background-color: purple;">
-                                <input type="radio" name="color-sistem" value="purple">
-                            </div>
-                            <div class="box-color" style="background-color: pink;">
-                                <input type="radio" name="color-sistem" value="pink">
-                            </div>
-                            <div class="box-color" style="background-color: yellow;">
-                                <input type="radio" name="color-sistem" value="yellow">
-                            </div>
-                            <div class="box-color" style="background-color: cyan;">
-                                <input type="radio" name="color-sistem" value="cyan">
-                            </div>
+                            <input type="file" id="upload-icon" style="position: absolute; inset: 0; opacity: 0;" name="icon_new" class="poppins-regular">
                         </div>
                     </div>
                 </div>
             </section>
         </section>
-        <section class="card-sistem">
+
+        <section class="card-sistem" style="margin-top: 20px;">
             <h1 class="poppins-semibold" style="margin-bottom: 18px;">Mode Sistem</h1>
             <div class="card-group">
                 <div class="box-card">
@@ -96,10 +79,8 @@
                         <h3>Mode Maintenance</h3>
                         <p>Tutup sementara akses untuk siswa & petugas.</p>
                     </div>
-                    <div class="toggle">
-                        </div>
+                    <input type="checkbox" name="mode_maintenance" id="mode-maintenance" <?= ($data['konfigurasi']['maintenance'] ?? false) ? 'checked' : ''; ?>>
                 </div>
-               
             </div>
             <div class="btn-group">
                 <button type="button" class="btn-secondary" onclick="window.location.reload();">Batal</button>

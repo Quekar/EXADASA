@@ -4,8 +4,8 @@
             <a href="<?= Constant::DIRNAME ?>" style="all: inherit; cursor: pointer;">
                 <i class="ph ph-graduation-cap bg-icon-primary" style="font-size: 20px; color: #fff;"></i>
                 <div class="title-group">
-                    <h1 class="poppins-semibold">EXADASA</h1>
-                    <p class="poppins-light">SMART EXAM PLATFORM</p>
+                    <h1 class="poppins-semibold"><?= $data["konfigurasi"]["nama_sistem"] ?? "PLATFORM CBT" ?></h1>
+                    <p class="poppins-light"><?= $data["konfigurasi"]["nama_sekolah"] ?? "SMART EXAM PLATFORM" ?></p>
                 </div>
             </a>
         </header>
@@ -32,7 +32,7 @@
             </div>
         </main>
         <footer>
-            <p class="poppins-regular" style="font-size: 12px; color: var(--color-muted);">&copy; 2026 EXADASA</p>
+            <p class="poppins-regular" style="font-size: 12px; color: var(--color-muted);"><?= $data["konfigurasi"]["copyright"] ?? "Copyrigth all reversed" ?></p>
         </footer>
     </section>
     <section class="container right">

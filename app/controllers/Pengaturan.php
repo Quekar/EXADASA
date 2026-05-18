@@ -9,7 +9,6 @@ class Pengaturan extends Controller {
 
         $data["title"] = "Pengaturan";
         $data["css"] = "style.pengaturan";
-
         $data["konfigurasi"] = $this->model('Pengaturan_model')->getKonfigurasi();
 
         $this->view('templates/header', $data);
@@ -20,10 +19,12 @@ class Pengaturan extends Controller {
     }
 
     public function ubah() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->model('Pengaturan_model')->updateKonfigurasi($_POST);
-            header('Location: ' . Constant::DIRNAME . 'pengaturan');
-            exit;
+        if($this->model("Pengaturan_model")->ubahKonfigurasi($_POST, $_FILES) > 0) {
+            Flasher::setFlash("Konfigurasi sistem berhasil diubah", "success");
+        } else {
+            Flasher::setFlash("Konfigurasi sistem gagal diubah", "error");
         }
+        header('Location: ' . Constant::DIRNAME . 'pengaturan');
+        exit;
     }
 }

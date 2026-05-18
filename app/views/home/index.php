@@ -4,8 +4,8 @@
             <a href="<?= Constant::DIRNAME ?>" style="all: inherit; cursor: pointer;">
                 <i class="ph ph-graduation-cap bg-icon-primary" style="font-size: 20px; color: #fff;"></i>
                 <div class="title-group">
-                    <h1 class="poppins-semibold">EXADASA</h1>
-                    <p class="poppins-light">SMART EXAM PLATFORM</p>
+                    <h1 class="poppins-semibold"><?= $data["konfigurasi"]["nama_sistem"] ?? "PLATFORM CBT" ?></h1>
+                    <p class="poppins-light"><?= $data["konfigurasi"]["nama_sekolah"] ?? "SMART EXAM PLATFORM" ?></p>
                 </div>
             </a>
         </section>
@@ -137,8 +137,7 @@
 
 <footer id="footer">
     <div class="container footer">
-        <p class="poppins-medium" style="font-size: 14px; color: var(--color-muted-foreground); margin: auto;">&copy;
-            2026 EduCBT - Platform Ujian Online Sekolah</p>
+        <p class="poppins-medium" style="font-size: 14px; color: var(--color-muted-foreground); margin: auto;"><?= $data["konfigurasi"]["copyright"] ?? "Copyright all reversed" ?> - Platform Ujian Online Sekolah</p>
     </div>
 </footer>
 

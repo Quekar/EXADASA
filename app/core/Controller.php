@@ -2,6 +2,7 @@
 
 class Controller {
 	public function view(string $view, array $data = []) {
+        $data["konfigurasi"] = $this->model('Pengaturan_model')->getKonfigurasi();
 		require_once 'app/views/'.$view.'.php';
 	}
 
