@@ -15,8 +15,7 @@ class Hasilujian_model {
                             COUNT(CASE WHEN ns.publik = 0 THEN 1 END) as menunggu_hasil
                           FROM nilai_siswa ns
                           JOIN siswa s ON ns.nisn = s.nisn
-                          JOIN users u ON s.nama_lengkap = u.username
-                          WHERE u.username = :username");
+                          WHERE s.nisn = :username");
         $db->bind('username', $username);
         return $db->single();
     }
