@@ -22,9 +22,11 @@ class Pengumuman extends Controller {
     public function tambah() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($this->model('Pengumuman_model')->tambahDataPengumuman($_POST) > 0) {
+                Flasher::setFlash('Pengumuman berhasil ditambahkan', 'success');
                 header('Location: ' . Constant::DIRNAME . 'pengumuman');
                 exit;
             } else {
+                Flasher::setFlash('Pengumuman gagal ditambahkan', 'error');
                 header('Location: ' . Constant::DIRNAME . 'pengumuman');
                 exit;
             }
@@ -33,9 +35,11 @@ class Pengumuman extends Controller {
 
     public function hapus($id) {
         if ($this->model('Pengumuman_model')->hapusDataPengumuman($id) > 0) {
+            Flasher::setFlash('Pengumuman berhasil dihapus', 'success');    
             header('Location: ' . Constant::DIRNAME . 'pengumuman');
             exit;
         } else {
+            Flasher::setFlash('Pengumuman gagal dihapus', 'error');
             header('Location: ' . Constant::DIRNAME . 'pengumuman');
             exit;
         }
@@ -51,9 +55,11 @@ class Pengumuman extends Controller {
     public function edit() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($this->model('Pengumuman_model')->ubahDataPengumuman($_POST) > 0) {
+                Flasher::setFlash('Pengumuman berhasil diubah', 'success');
                 header('Location: ' . Constant::DIRNAME . 'pengumuman');
                 exit;
             } else {
+                Flasher::setFlash('Pengumuman gagal diubah', 'error');
                 header('Location: ' . Constant::DIRNAME . 'pengumuman');
                 exit;
             }

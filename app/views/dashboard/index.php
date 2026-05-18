@@ -180,10 +180,11 @@
                                         $pStatus = $data['statusMap'][$id_uj] ?? null;
                                         $now = time();
                                         $selesai = strtotime($ujian['jadwal_selesai']);
-                                        if ($pStatus["status"] === 'selesai' || $now > $selesai):
+                                       
+                                        if (isset($pStatus["status"]) && $pStatus["status"] === 'selesai' || $now > $selesai):
                                     ?>
                                         <span class="status-badge status-selesai">Selesai</span>
-                                    <?php elseif ($pStatus["status"] === 'proses'): ?>
+                                    <?php elseif (isset($pStatus["status"]) && $pStatus["status"] === 'proses'): ?>
                                         <span class="status-badge status-proses">Proses</span>
                                     <?php else: ?>
                                         <span class="status-badge status-belum">Belum</span>
