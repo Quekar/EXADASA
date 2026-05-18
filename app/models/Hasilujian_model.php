@@ -31,9 +31,8 @@ class Hasilujian_model {
                           FROM nilai_siswa ns
                           JOIN ujian uj ON ns.id_ujian = uj.id_ujian
                           JOIN siswa s ON ns.nisn = s.nisn
-                          JOIN users u ON s.nama_lengkap = u.username
                           LEFT JOIN kategori_soal k ON uj.id_kelas = k.id_kategori
-                          WHERE u.username = :username
+                          WHERE ns.nisn = :username
                           ORDER BY ns.created_at DESC");
         $db->bind('username', $username);
         return $db->resultSet();
