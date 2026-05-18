@@ -11,6 +11,9 @@ class Koreksi extends Controller
 
         $data["title"] = "Koreksi";
         $data["css"] = "style.koreksi";
+        
+        $data["koreksi_list"] = $this->model('Koreksi_model')->getAllKoreksi();
+
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);
         $this->view('templates/navbar', $data);
@@ -30,133 +33,104 @@ class Koreksi extends Controller
             exit;
         }
 
-        $data["title"] = "Koreksi";
+        $koreksiModel = $this->model('Koreksi_model');
+        
+        $ujian_siswa = $koreksiModel->getDetailUjianSiswa($id);
+        if (!$ujian_siswa) {
+            header('location: ' . Constant::DIRNAME . 'koreksi');
+            exit;
+        }
+
+        $data["title"] = "Koreksi Detail";
         $data["css"] = "style.koreksi.detail";
         $data["student_id"] = $id;
 
+        $nilai = $koreksiModel->getNilaiSiswa($id);
+        $status_koreksi = 'pending';
+        if ($nilai) {
+            $status_koreksi = $nilai['publik'] == 1 ? 'published' : 'corrected';
+        }
 
+        $masuk = new DateTime($ujian_siswa['waktu_masuk']);
+        $selesai = new DateTime($ujian_siswa['waktu_selesai']);
+        $diff = $masuk->diff($selesai);
+        $durasi = "";
+        if ($diff->h > 0) $durasi .= $diff->h . " jam ";
+        if ($diff->i > 0) $durasi .= $diff->i . " menit ";
+        if ($diff->s > 0) $durasi .= $diff->s . " detik";
+        if ($durasi == "") $durasi = "0 detik";
+
+        $words = explode(" ", $ujian_siswa['nama_lengkap']);
+        $inisial = "";
+        foreach ($words as $w) {
+            $inisial .= strtoupper(substr($w, 0, 1));
+            if (strlen($inisial) >= 2) break;
+        }
+        
         $data["student"] = [
-            'nama' => 'M. Rafly Saputra',
-            'kelas' => 'XII IPA 1',
-            'ujian' => 'Ujian Tengah Semester - Matematika',
-            'waktu_submit' => '2026-04-20 09:55',
-            'durasi' => '45 menit',
-            'status' => 'pending',
-            'inisial' => 'MR',
+            'id_ujian_siswa' => $ujian_siswa['id_ujian_siswa'],
+            'nisn' => $ujian_siswa['nisn'],
+            'id_ujian' => $ujian_siswa['id_ujian'],
+            'nama' => $ujian_siswa['nama_lengkap'],
+            'kelas' => $ujian_siswa['id_kelas'],
+            'ujian' => $ujian_siswa['nama_ujian'],
+            'waktu_submit' => date('Y-m-d H:i', strtotime($ujian_siswa['waktu_selesai'])),
+            'durasi' => trim($durasi),
+            'status' => $status_koreksi,
+            'inisial' => $inisial,
             'av' => 'av-blue',
         ];
 
+        $raw_questions = $koreksiModel->getJawabanDetail($id, $ujian_siswa['id_ujian']);
+        
+        $questions = [];
+        $no = 1;
+        foreach ($raw_questions as $q) {
+            $status = ($q['jawaban_siswa'] === $q['kunci']) ? 'benar' : 'salah';
+            $skor = ($status === 'benar') ? $q['skor_max'] : 0;
+            
+            $opsi = [];
+            if ($q['ja']) $opsi['A'] = $q['ja'];
+            if ($q['jb']) $opsi['B'] = $q['jb'];
+            if ($q['jc']) $opsi['C'] = $q['jc'];
+            if ($q['jd']) $opsi['D'] = $q['jd'];
 
-        $data["questions"] = [
-            [
-                'no' => 1,
-                'soal' => 'Diketahui f(x) = 2x² + 3x - 5. Tentukan nilai f(2)!',
-                'opsi' => ['A' => '5', 'B' => '9', 'C' => '7', 'D' => '11'],
-                'jawaban_siswa' => 'B',
-                'kunci' => 'B',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 2,
-                'soal' => 'Hasil dari limit x→∞ (3x² + 2x)/(x² - 1) adalah...',
-                'opsi' => ['A' => '1', 'B' => '2', 'C' => '3', 'D' => '0'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'C',
-                'skor_max' => 5,
-                'skor' => 0,
-                'status' => 'salah',
-            ],
-            [
-                'no' => 3,
-                'soal' => 'Turunan pertama dari f(x) = x³ - 6x² + 12x - 8 adalah...',
-                'opsi' => ['A' => '3x² - 12x + 12', 'B' => '3x² - 12x', 'C' => 'x² - 12x + 12', 'D' => '3x² + 12x + 12'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 4,
-                'soal' => 'Nilai dari integral ∫(2x + 3)dx adalah...',
-                'opsi' => ['A' => 'x² + 3x + C', 'B' => '2x² + 3x + C', 'C' => 'x² + 3 + C', 'D' => '2x + 3 + C'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 5,
-                'soal' => 'Matriks A = [[1,2],[3,4]]. Determinan dari matriks A adalah...',
-                'opsi' => ['A' => '-2', 'B' => '2', 'C' => '-10', 'D' => '10'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 6,
-                'soal' => 'Jika sin α = 3/5 and α berada di kuadran I, maka nilai cos α adalah...',
-                'opsi' => ['A' => '4/5', 'B' => '3/4', 'C' => '5/4', 'D' => '5/3'],
-                'jawaban_siswa' => 'B',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 0,
-                'status' => 'salah',
-            ],
-            [
-                'no' => 7,
-                'soal' => 'Hasil dari log₂ 32 adalah...',
-                'opsi' => ['A' => '4', 'B' => '5', 'C' => '6', 'D' => '3'],
-                'jawaban_siswa' => 'B',
-                'kunci' => 'B',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 8,
-                'soal' => 'Persamaan garis yang melalui titik (2, 3) dan tegak lurus dengan garis y = 2x + 1 adalah...',
-                'opsi' => ['A' => 'y = -½x + 4', 'B' => 'y = 2x - 1', 'C' => 'y = -2x + 7', 'D' => 'y = ½x + 2'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 9,
-                'soal' => 'Nilai dari C(8, 3) adalah...',
-                'opsi' => ['A' => '56', 'B' => '336', 'C' => '28', 'D' => '120'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-            [
-                'no' => 10,
-                'soal' => 'Jika f(x) = 3x + 2 dan g(x) = x² - 1, maka (f ∘ g)(2) adalah...',
-                'opsi' => ['A' => '11', 'B' => '14', 'C' => '9', 'D' => '17'],
-                'jawaban_siswa' => 'A',
-                'kunci' => 'A',
-                'skor_max' => 5,
-                'skor' => 5,
-                'status' => 'benar',
-            ],
-        ];
+            $map = ['ja' => 'A', 'jb' => 'B', 'jc' => 'C', 'jd' => 'D'];
+            $jawaban_siswa_mapped = $q['jawaban_siswa'] ? ($map[$q['jawaban_siswa']] ?? '') : '';
+            $kunci_mapped = $q['kunci'] ? ($map[$q['kunci']] ?? '') : '';
+            
+            $questions[] = [
+                'no' => $no++,
+                'soal' => $q['pertanyaan'],
+                'opsi' => $opsi,
+                'jawaban_siswa' => $jawaban_siswa_mapped,
+                'kunci' => $kunci_mapped,
+                'skor_max' => $q['skor_max'],
+                'skor' => $skor,
+                'status' => $status
+            ];
+        }
 
-        $questions = $data["questions"];
+        $data["questions"] = $questions;
         $data["totalSoal"] = count($questions);
         $data["benar"] = count(array_filter($questions, fn($q) => $q['status'] === 'benar'));
         $data["salah"] = count(array_filter($questions, fn($q) => $q['status'] === 'salah'));
         $data["skorTotal"] = array_sum(array_map(fn($q) => $q['skor'] ?? 0, $questions));
         $data["skorMax"] = array_sum(array_map(fn($q) => $q['skor_max'], $questions));
         $data["persentase"] = $data["skorMax"] > 0 ? round(($data["skorTotal"] / $data["skorMax"]) * 100) : 0;
+
+        if (count($questions) > 0) {
+            $nilaiData = [
+                'id_ujian' => $ujian_siswa['id_ujian'],
+                'id_ujian_siswa' => $ujian_siswa['id_ujian_siswa'],
+                'nisn' => $ujian_siswa['nisn'],
+                'total_benar' => $data["benar"],
+                'total_salah' => $data["salah"],
+                'nilai' => $data["persentase"],
+                'publik' => $nilai ? $nilai['publik'] : 0
+            ];
+            $koreksiModel->simpanAtauUpdateNilai($nilaiData);
+        }
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);

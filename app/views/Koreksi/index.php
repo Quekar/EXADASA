@@ -66,16 +66,29 @@
                 </thead>
                 <tbody>
 
-                    <?php
-                    $rows = [
-                        [1, 'MR', 'M. Rafly Saputra', 'XII IPA 1', 92, 28, 2, '2026-04-20 09:55', 'published', 'av-blue'],
-                        [2, 'MS', 'M. Surya Gymnastyar', 'XII IPA 1', 88, 26, 4, '2026-04-20 09:48', 'published', 'av-purple'],
-                        [3, 'R', 'Rheal', 'XII IPS 2', 76, 23, 7, '2026-04-20 09:50', 'corrected', 'av-teal'],
-                        [4, 'EP', 'Eka Putri', 'XII IPA 1', 95, 29, 1, '2026-04-20 09:42', 'published', 'av-green'],
-                    ];
-                    ?>
-
-                    <?php foreach ($rows as [$id, $inisial, $nama, $kelas, $skor, $benar, $salah, $submit, $status, $av]): ?>
+                    <?php foreach ($data['koreksi_list'] as $k): ?>
+                        <?php
+                            $id = $k['id_ujian_siswa'];
+                            $nama = $k['nama_lengkap'];
+                            $kelas = $k['id_kelas'];
+                            $skor = $k['nilai'];
+                            $benar = $k['total_benar'];
+                            $salah = $k['total_salah'];
+                            $submit = date('Y-m-d H:i', strtotime($k['waktu_selesai']));
+                            
+                            $status = 'pending';
+                            if ($k['id_nilai_siswa']) {
+                                $status = $k['publik'] == 1 ? 'published' : 'corrected';
+                            }
+                            
+                            $words = explode(" ", $nama);
+                            $inisial = "";
+                            foreach ($words as $w) {
+                                $inisial .= strtoupper(substr($w, 0, 1));
+                                if (strlen($inisial) >= 2) break;
+                            }
+                            $av = 'av-blue';
+                        ?>
                         <tr class="data-table__row">
 
                             <td>
