@@ -10,7 +10,7 @@ class Hasilujian_model {
     public function getStatistikSiswa($username) {
         $db = $this->db;
         $db->query("SELECT 
-                            AVG(ns.nilai) as rata_nilai, 
+                            AVG(CASE WHEN ns.publik = 1 THEN ns.nilai END) as rata_nilai, 
                             COUNT(CASE WHEN ns.publik = 1 THEN 1 END) as ujian_selesai,
                             COUNT(CASE WHEN ns.publik = 0 THEN 1 END) as menunggu_hasil
                           FROM nilai_siswa ns
@@ -31,7 +31,7 @@ class Hasilujian_model {
                           JOIN ujian uj ON ns.id_ujian = uj.id_ujian
                           JOIN siswa s ON ns.nisn = s.nisn
                           LEFT JOIN kategori_soal k ON uj.id_kelas = k.id_kategori
-                          WHERE ns.nisn = :username
+                          WHERE ns.nisn = :username AND ns.publik = 1
                           ORDER BY ns.created_at DESC");
         $db->bind('username', $username);
         return $db->resultSet();

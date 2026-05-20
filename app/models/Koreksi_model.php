@@ -138,4 +138,54 @@ class Koreksi_model
             return $this->simpanNilai($data);
         }
     }
+
+    public function setPublishStatus($id_ujian_siswa, $publik)
+    {
+        try {
+            $existing = $this->getNilaiSiswa($id_ujian_siswa);
+            if (!$existing) {
+                $ujian_siswa = $this->getDetailUjianSiswa($id_ujian_siswa);
+                if (!$ujian_siswa) return false;
+
+                $raw_questions = $this->getJawabanDetail($id_ujian_siswa, $ujian_siswa['id_ujian']);
+                $total_benar = 0;
+                $total_salah = 0;
+                $skorTotal = 0;
+                $skorMax = 0;
+
+                foreach ($raw_questions as $q) {
+                    $isCorrect = ($q['jawaban_siswa'] === $q['kunci']);
+                    if ($isCorrect) {
+                        $total_benar++;
+                        $skorTotal += $q['skor_max'];
+                    } else {
+                        $total_salah++;
+                    }
+                    $skorMax += $q['skor_max'];
+                }
+                
+                $persentase = $skorMax > 0 ? round(($skorTotal / $skorMax) * 100) : 0;
+
+                $nilaiData = [
+                    'id_ujian' => $ujian_siswa['id_ujian'],
+                    'id_ujian_siswa' => $id_ujian_siswa,
+                    'nisn' => $ujian_siswa['nisn'],
+                    'total_benar' => $total_benar,
+                    'total_salah' => $total_salah,
+                    'nilai' => $persentase,
+                    'publik' => $publik
+                ];
+                return $this->simpanNilai($nilaiData);
+            }
+
+            $query = "UPDATE nilai_siswa SET publik = :publik WHERE id_ujian_siswa = :id_ujian_siswa";
+            $this->db->query($query);
+            $this->db->bind('publik', $publik);
+            $this->db->bind('id_ujian_siswa', $id_ujian_siswa);
+            $this->db->execute();
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }

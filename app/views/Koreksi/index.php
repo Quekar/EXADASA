@@ -131,14 +131,14 @@
                                         <i class="ph ph-eye"></i>
                                     </a>
                                     <?php if ($status === 'published'): ?>
-                                        <button class="icon-btn icon-btn--orange" title="Sembunyikan">
+                                        <a href="<?= Constant::DIRNAME ?>koreksi/unpublish/<?= $id ?>" class="icon-btn icon-btn--orange" title="Sembunyikan">
                                             <i class="ph ph-eye-slash"></i>
-                                        </button>
+                                        </a>
                                     <?php endif; ?>
                                     <?php if ($status === 'corrected' || $status === 'pending'): ?>
-                                        <button class="icon-btn poppins-medium">
+                                        <a href="<?= Constant::DIRNAME ?>koreksi/publish/<?= $id ?>" class="icon-btn poppins-medium" title="Publish">
                                             <i class="ph ph-paper-plane-tilt"></i>
-                                        </button>
+                                        </a>
                                     <?php endif; ?>
                                 </div>
                             </td>

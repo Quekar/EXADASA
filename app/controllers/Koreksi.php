@@ -174,4 +174,52 @@ class Koreksi extends Controller
         }
         exit;
     }
+
+    public function publish($id = null)
+    {
+        if ($_SESSION['user']['role'] !== "petugas" && $_SESSION['user']['role'] !== "admin") {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+
+        if ($id === null) {
+            header('location: ' . Constant::DIRNAME . 'koreksi');
+            exit;
+        }
+
+        $koreksiModel = $this->model('Koreksi_model');
+        if ($koreksiModel->setPublishStatus($id, 1)) {
+            $pengguna = $_SESSION['user']['username'];
+            $this->model('Dashboard_model')->insertLog($pengguna, 'Mempublikasikan hasil ujian siswa (ID: ' . $id . ')');
+            Flasher::setFlash("Hasil Ujian Berhasil Dipublish", "success");
+        } else {
+            Flasher::setFlash("Hasil Ujian Gagal Dipublish", "error");
+        }
+        header('location: ' . Constant::DIRNAME . 'koreksi');
+        exit;
+    }
+
+    public function unpublish($id = null)
+    {
+        if ($_SESSION['user']['role'] !== "petugas" && $_SESSION['user']['role'] !== "admin") {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+
+        if ($id === null) {
+            header('location: ' . Constant::DIRNAME . 'koreksi');
+            exit;
+        }
+
+        $koreksiModel = $this->model('Koreksi_model');
+        if ($koreksiModel->setPublishStatus($id, 0)) {
+            $pengguna = $_SESSION['user']['username'];
+            $this->model('Dashboard_model')->insertLog($pengguna, 'Menyembunyikan hasil ujian siswa (ID: ' . $id . ')');
+            Flasher::setFlash("Hasil Ujian Berhasil Disembunyikan", "success");
+        } else {
+            Flasher::setFlash("Hasil Ujian Gagal Disembunyikan", "error");
+        }
+        header('location: ' . Constant::DIRNAME . 'koreksi');
+        exit;
+    }
 }

@@ -168,10 +168,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 setTimeout(() => {
-                    this.innerHTML = originalHTML;
-                    this.classList.remove('btn-simpan-nilai--success');
-                    this.disabled = false;
-                }, 3000);
+                    window.location.href = data.baseUrl + 'koreksi';
+                }, 1000);
             } else {
                 throw new Error(result.message || 'Gagal menyimpan');
             }
