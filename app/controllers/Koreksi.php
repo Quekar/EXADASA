@@ -119,23 +119,59 @@ class Koreksi extends Controller
         $data["skorMax"] = array_sum(array_map(fn($q) => $q['skor_max'], $questions));
         $data["persentase"] = $data["skorMax"] > 0 ? round(($data["skorTotal"] / $data["skorMax"]) * 100) : 0;
 
-        if (count($questions) > 0) {
-            $nilaiData = [
-                'id_ujian' => $ujian_siswa['id_ujian'],
-                'id_ujian_siswa' => $ujian_siswa['id_ujian_siswa'],
-                'nisn' => $ujian_siswa['nisn'],
-                'total_benar' => $data["benar"],
-                'total_salah' => $data["salah"],
-                'nilai' => $data["persentase"],
-                'publik' => $nilai ? $nilai['publik'] : 0
-            ];
-            $koreksiModel->simpanAtauUpdateNilai($nilaiData);
-        }
+
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);
         $this->view('templates/navbar', $data);
         $this->view('koreksi/detail', $data);
         $this->view('templates/footer');
+    }
+
+    public function simpanNilaiKoreksi()
+    {
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            exit;
+        }
+
+        if ($_SESSION['user']['role'] !== "petugas") {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!$input || !isset($input['id_ujian_siswa'], $input['id_ujian'], $input['nisn'], $input['total_benar'], $input['total_salah'], $input['nilai'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Data tidak lengkap']);
+            exit;
+        }
+
+        $koreksiModel = $this->model('Koreksi_model');
+
+        $nilaiData = [
+            'id_ujian' => $input['id_ujian'],
+            'id_ujian_siswa' => $input['id_ujian_siswa'],
+            'nisn' => $input['nisn'],
+            'total_benar' => intval($input['total_benar']),
+            'total_salah' => intval($input['total_salah']),
+            'nilai' => intval($input['nilai']),
+            'publik' => 0
+        ];
+
+        $result = $koreksiModel->simpanAtauUpdateNilai($nilaiData);
+
+        if ($result !== false) {
+            echo json_encode(['success' => true, 'message' => 'Nilai berhasil disimpan']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Gagal menyimpan nilai']);
+        }
+        exit;
     }
 }
