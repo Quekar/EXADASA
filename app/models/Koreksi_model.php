@@ -54,7 +54,7 @@ class Koreksi_model
     {
         try {
             $query = "SELECT usoal.point as skor_max, bs.id_bank_soal, bs.pertanyaan, bs.ja, bs.jb, bs.jc, bs.jd, bs.answer as kunci,
-                             js.answer as jawaban_siswa
+                             js.answer as jawaban_siswa, js.jawaban_benar, js.benar
                       FROM ujian_soal usoal
                       JOIN bank_soal bs ON usoal.id_bank_soal = bs.id_bank_soal
                       LEFT JOIN jawaban_siswa js ON js.id_bank_soal = bs.id_bank_soal AND js.id_ujian_siswa = :id_ujian_siswa
@@ -111,8 +111,7 @@ class Koreksi_model
             $query = "UPDATE nilai_siswa 
                       SET total_benar = :total_benar, 
                           total_salah = :total_salah, 
-                          nilai = :nilai,
-                          publik = :publik
+                          nilai = :nilai
                       WHERE id_ujian_siswa = :id_ujian_siswa";
             
             $this->db->query($query);
@@ -120,7 +119,6 @@ class Koreksi_model
             $this->db->bind('total_benar', $data['total_benar']);
             $this->db->bind('total_salah', $data['total_salah']);
             $this->db->bind('nilai', $data['nilai']);
-            $this->db->bind('publik', isset($data['publik']) ? $data['publik'] : 0);
             
             $this->db->execute();
             return $this->db->rowCount();

@@ -138,7 +138,7 @@ class Ujian_model
                               LEFT JOIN kategori_soal ks ON bs.id_kategori = ks.id_kategori 
                               ORDER BY bs.created_at DESC");
             return $this->db->resultSet();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return [];
         }
     }
@@ -148,7 +148,7 @@ class Ujian_model
         try {
             $this->db->query("SELECT * FROM kategori_soal ORDER BY nama_kategori ASC");
             return $this->db->resultSet();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return [];
         }
     }
@@ -190,21 +190,34 @@ class Ujian_model
 
             if (isset($data['soal_text'])) {
                 foreach ($data['soal_text'] as $index => $text) {
-                    if (empty($text)) continue;
+                    if (empty($text))
+                        continue;
                     $id_bank_soal = uniqid('bs_', true);
                     $answer_map = ['A' => 'ja', 'B' => 'jb', 'C' => 'jc', 'D' => 'jd'];
-                    $answer = $answer_map[$data['jawaban_benar'][$index]] ?? 'ja';
+                    $answer = $answer_map[$data['jawaban_benar'][$index]] ?? null;
 
-                    $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) 
-                                      VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
-                    $this->db->bind('id', $id_bank_soal);
-                    $this->db->bind('pertanyaan', $text);
-                    $this->db->bind('ja', $data['opsi_a'][$index]);
-                    $this->db->bind('jb', $data['opsi_b'][$index]);
-                    $this->db->bind('jc', $data['opsi_c'][$index]);
-                    $this->db->bind('jd', $data['opsi_d'][$index]);
-                    $this->db->bind('answer', $answer);
-                    $this->db->execute();
+                    if ($answer) {
+                        $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) 
+                                          VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                        $this->db->bind('id', $id_bank_soal);
+                        $this->db->bind('pertanyaan', $text);
+                        $this->db->bind('ja', $data['opsi_a'][$index]);
+                        $this->db->bind('jb', $data['opsi_b'][$index]);
+                        $this->db->bind('jc', $data['opsi_c'][$index]);
+                        $this->db->bind('jd', $data['opsi_d'][$index]);
+                        $this->db->bind('answer', $answer);
+                        $this->db->execute();
+                    } else {
+                        $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd) 
+                                          VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd)");
+                        $this->db->bind('id', $id_bank_soal);
+                        $this->db->bind('pertanyaan', $text);
+                        $this->db->bind('ja', $data['opsi_a'][$index]);
+                        $this->db->bind('jb', $data['opsi_b'][$index]);
+                        $this->db->bind('jc', $data['opsi_c'][$index]);
+                        $this->db->bind('jd', $data['opsi_d'][$index]);
+                        $this->db->execute();
+                    }
 
                     $unique_soal_ids[$id_bank_soal] = true;
                 }
@@ -263,17 +276,27 @@ class Ujian_model
 
             if (isset($data['soal_text'])) {
                 foreach ($data['soal_text'] as $index => $text) {
-                    if (empty($text)) continue;
+                    if (empty($text))
+                        continue;
 
                     $id_bank_soal = $data['id_bank_soal_manual'][$index] ?? '';
                     $answer_map = ['A' => 'ja', 'B' => 'jb', 'C' => 'jc', 'D' => 'jd'];
-                    $answer = $answer_map[$data['jawaban_benar'][$index]] ?? 'ja';
+                    $answer = $answer_map[$data['jawaban_benar'][$index]] ?? null;
 
-                    if (!empty($id_bank_soal)) {
-                        $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd, answer = :answer WHERE id_bank_soal = :id");
+                    if ($answer) {
+                        if (!empty($id_bank_soal)) {
+                            $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd, answer = :answer WHERE id_bank_soal = :id");
+                        } else {
+                            $id_bank_soal = uniqid('bs_', true);
+                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                        }
                     } else {
-                        $id_bank_soal = uniqid('bs_', true);
-                        $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                        if (!empty($id_bank_soal)) {
+                            $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd WHERE id_bank_soal = :id");
+                        } else {
+                            $id_bank_soal = uniqid('bs_', true);
+                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd)");
+                        }
                     }
 
                     $this->db->bind('id', $id_bank_soal);
@@ -282,7 +305,7 @@ class Ujian_model
                     $this->db->bind('jb', $data['opsi_b'][$index]);
                     $this->db->bind('jc', $data['opsi_c'][$index]);
                     $this->db->bind('jd', $data['opsi_d'][$index]);
-                    $this->db->bind('answer', $answer);
+                    if($answer) $this->db->bind('answer', $answer);
                     $this->db->execute();
 
                     $unique_soal_ids[$id_bank_soal] = true;

@@ -238,7 +238,7 @@
                                     <div class="options-grid">
                                         <?php foreach(['A','B','C','D'] as $opt) : ?>
                                             <div class="option-row">
-                                                <input type="radio" name="jawaban_benar[<?= $index ?>]" value="<?= $opt ?>" <?= ($s['answer'] == 'j'.strtolower($opt)) ? 'checked' : '' ?> required>
+                                                <input type="radio" name="jawaban_benar[<?= $index ?>]" value="<?= $opt ?>" <?= ($s['answer'] == 'j'.strtolower($opt)) ? 'checked' : '' ?>>
                                                 <input type="text" name="opsi_<?= strtolower($opt) ?>[]" value="<?= $s['j'.strtolower($opt)] ?>" placeholder="Opsi <?= $opt ?>" required>
                                             </div>
                                         <?php endforeach; ?>
@@ -284,7 +284,7 @@
                 <div class="options-grid">
                     <?php foreach(['A','B','C','D'] as $opt) : ?>
                         <div class="option-row">
-                            <input type="radio" name="jawaban_benar[INDEX]" value="<?= $opt ?>" required>
+                            <input type="radio" name="jawaban_benar[INDEX]" value="<?= $opt ?>">
                             <input type="text" name="opsi_<?= strtolower($opt) ?>[]" placeholder="Opsi <?= $opt ?>" required>
                         </div>
                     <?php endforeach; ?>

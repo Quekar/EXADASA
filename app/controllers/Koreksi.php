@@ -23,12 +23,7 @@ class Koreksi extends Controller
 
     public function detail($id = null)
     {
-        if ($_SESSION['user']['role'] !== "petugas") {
-            header('location: ' . Constant::DIRNAME . 'dashboard');
-            exit;
-        }
-
-        if ($id === null) {
+         if ($id === null) {
             header('location: ' . Constant::DIRNAME . 'koreksi');
             exit;
         }
@@ -87,8 +82,9 @@ class Koreksi extends Controller
         $no = 1;
         foreach ($raw_questions as $q) {
             $status = ($q['jawaban_siswa'] === $q['kunci']) ? 'benar' : 'salah';
+            if($q["jawaban_benar"]) $status = ($q["jawaban_benar"] === $q["jawaban_siswa"]) ? 'benar' : 'salah';
+            if($q["benar"]) $status = 'benar';
             $skor = ($status === 'benar') ? $q['skor_max'] : 0;
-            
             $opsi = [];
             if ($q['ja']) $opsi['A'] = $q['ja'];
             if ($q['jb']) $opsi['B'] = $q['jb'];

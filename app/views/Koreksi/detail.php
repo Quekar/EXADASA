@@ -134,7 +134,9 @@ $persentase = $data['persentase'];
                                 $isSelected = ($q['jawaban_siswa'] === $huruf);
                                 $isCorrect = ($q['kunci'] === $huruf);
                                 $optClass = '';
-                                if ($isSelected && $isCorrect)
+                                if ($isSelected && $q["status"] == "benar") {
+                                    $optClass = 'pg-opt--correct-selected';
+                                } else if ($isSelected && $isCorrect)
                                     $optClass = 'pg-opt--correct-selected';
                                 elseif ($isSelected && !$isCorrect)
                                     $optClass = 'pg-opt--wrong-selected';
@@ -144,7 +146,7 @@ $persentase = $data['persentase'];
                                 <div class="pg-opt <?= $optClass ?> poppins-regular">
                                     <span class="pg-opt__letter poppins-semibold"><?= $huruf ?></span>
                                     <span class="pg-opt__text"><?= $teks ?></span>
-                                    <?php if ($isSelected && $isCorrect): ?>
+                                    <?php if (($isSelected && $isCorrect) || ($isSelected && $q["status"] == "benar")): ?>
                                         <i class="ph ph-check-circle pg-opt__icon pg-opt__icon--correct"></i>
                                     <?php elseif ($isSelected && !$isCorrect): ?>
                                         <i class="ph ph-x-circle pg-opt__icon pg-opt__icon--wrong"></i>
@@ -167,7 +169,8 @@ $persentase = $data['persentase'];
                         </div>
                     </div>
 
-                
+                            
+                        <?php if($_SESSION["user"]["role"] != "siswa"): ?>
                     <div class="koreksi-actions">
                         <span class="koreksi-actions__label poppins-medium"><i class="ph ph-pencil-simple"></i> Penilaian Petugas:</span>
                         <div class="koreksi-actions__buttons">
@@ -179,12 +182,14 @@ $persentase = $data['persentase'];
                             </button>
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
 
 
+    <?php if($_SESSION["user"]["role"] != "siswa"): ?>
     <div class="simpan-nilai-section" id="simpanNilaiSection">
         <div class="simpan-nilai-card">
             <div class="simpan-nilai__header">
@@ -234,6 +239,7 @@ $persentase = $data['persentase'];
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
     <div class="bottom-action-bar">
         <div class="bottom-action-bar__left">

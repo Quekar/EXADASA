@@ -63,7 +63,7 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <button class="btn-detail">Detail Jawaban</button>
+                        <button class="btn-detail"><a style="all: unset;" href="<?= Constant::DIRNAME ?>koreksi/detail/<?= $r["id_ujian_siswa"] ?>"> Detail Jawaban </a></button>
                     </div>
                 <?php else : ?>
                     <div class="hasil-ujian-card">

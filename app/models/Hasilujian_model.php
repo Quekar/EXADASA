@@ -26,9 +26,11 @@ class Hasilujian_model {
                             ns.*, 
                             uj.nama_ujian, 
                             uj.id_kelas,
-                            k.nama_kategori as nama_mapel
+                            k.nama_kategori as nama_mapel,
+                            ujs.id_ujian_siswa
                           FROM nilai_siswa ns
                           JOIN ujian uj ON ns.id_ujian = uj.id_ujian
+                          JOIN ujian_siswa ujs on uj.id_ujian = ujs.id_ujian
                           JOIN siswa s ON ns.nisn = s.nisn
                           LEFT JOIN kategori_soal k ON uj.id_kelas = k.id_kategori
                           WHERE ns.nisn = :username AND ns.publik = 1

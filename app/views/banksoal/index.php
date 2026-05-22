@@ -136,16 +136,16 @@
                     <label>Jawaban Benar</label>
                     <div class="radio-group">
                         <label class="radio-item">
-                            <input type="radio" name="jawaban_benar" value="ja" id="form_ans_ja" required> A
+                            <input type="radio" name="jawaban_benar" value="ja" id="form_ans_ja"> A
                         </label>
                         <label class="radio-item">
-                            <input type="radio" name="jawaban_benar" value="jb" id="form_ans_jb" required> B
+                            <input type="radio" name="jawaban_benar" value="jb" id="form_ans_jb"> B
                         </label>
                         <label class="radio-item">
-                            <input type="radio" name="jawaban_benar" value="jc" id="form_ans_jc" required> C
+                            <input type="radio" name="jawaban_benar" value="jc" id="form_ans_jc"> C
                         </label>
                         <label class="radio-item">
-                            <input type="radio" name="jawaban_benar" value="jd" id="form_ans_jd" required> D
+                            <input type="radio" name="jawaban_benar" value="jd" id="form_ans_jd"> D
                         </label>
                     </div>
                 </div>
