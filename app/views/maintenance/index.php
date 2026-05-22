@@ -1,14 +1,11 @@
 <div class="maintenance-view">
     <div class="maintenance-wrapper">
-        
         <div class="content-side">
             <div class="badge-status poppins-medium">
                 <i class="ph-bold ph-wrench"></i>
                 <span>SISTEM MAINTENANCE</span>
             </div>
-            
-            <h1 class="poppins-bold">Mohon Maaf, <br>Sistem Sedang Dalam Pemeliharaan</h1>
-            
+            <h1 class="poppins-bold" style="font-size: 40px;">Mohon Maaf, <br>Sistem Sedang Dalam Pemeliharaan</h1>
             <p class="poppins-regular subtext">
                 Tim EXADASA sedang melakukan pembaruan infrastruktur dan pemeliharaan global untuk meningkatkan performa dan stabilitas layanan akademik.
             </p>
@@ -16,15 +13,12 @@
             <div class="update-progress-card">
                 <div class="progress-header poppins-medium">
                     <span><i class="ph-bold ph-gear-six"></i> Proses Pemeliharaan</span>
-                    <span class="poppins-bold text-blue">85% <span class="text-small poppins-medium">Selesai</span></span>
                 </div>
                 <div class="progress-bar-base">
                     <div class="progress-bar-fill animated-pulse"></div>
                 </div>
                 <div class="progress-steps poppins-regular">
-                    <span>Database Opt.</span>
-                    <span class="active">Security Patch</span>
-                    <span>UI Revamp</span>
+                    <span class="active" style="font-size: 11px;">Catatan: Memperbarui Sistem UI</span>
                 </div>
             </div>
 

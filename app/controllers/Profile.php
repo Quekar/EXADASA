@@ -11,10 +11,8 @@ class Profile extends Controller
         $data["title"] = "Profile";
         $data["css"] = "style.profile";
 
-        if ($role == 'siswa') {
-            $stats = $this->model("Profile_model")->getStudentStats($username);
-            $data['stats'] = $stats;
-        }
+        if ($role == 'siswa')
+            $data['stats'] = $this->model("Profile_model")->getStudentStats($username);
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);
@@ -23,13 +21,15 @@ class Profile extends Controller
         $this->view('templates/footer');
     }
 
-    public function update()
-    {
-        $result = $this->model("Profile_model")->prosesUpdate($_POST, $_FILES, $_SESSION['user']);
-        Flasher::setFlash($result['message'], $result['status']);
-        $username = $_SESSION['user']['username'];
-        $this->model('Dashboard_model')->insertLog($username, 'Memperbarui profil akun');
-        header('location: ' . Constant::DIRNAME . 'profile');
-        exit;
+    public function update() {
+        if ($this->model("Profile_model")->updateProfile($_POST, $_FILES, $_SESSION["user"]["role"]) > 0) {
+            Flasher::setFlash("Profil berhasil diubah", "success");
+            header("Location: " . Constant::DIRNAME . "profile");
+            exit;
+        } else {
+            Flasher::setFlash("Profil gagal diubah", "error");
+            header("Location: " . Constant::DIRNAME . "profile");
+            exit;
+        }
     }
 }

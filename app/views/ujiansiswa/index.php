@@ -43,7 +43,6 @@ $now       = time();
                 $tsMulai     = strtotime(str_replace('T', ' ', $ujian['jadwal_mulai']));
                 $tsSels      = strtotime(str_replace('T', ' ', $ujian['jadwal_selesai']));
                 
-                // Progress Siswa
                 $prog        = $statusMap[$id_ujian] ?? ['status' => null, 'is_scored' => false];
                 $pSiswa      = $prog['status'];
                 $isScored    = $prog['is_scored'];
@@ -105,7 +104,7 @@ $now       = time();
                                 Lihat Hasil
                             </a>
                         <?php else: ?>
-                            <button class="card-footer__btn btn-lihat-hasil poppins-semibold" disabled title="Menunggu petugas mempublish nilai">
+                            <button style="cursor: not-allowed;" class="card-footer__btn btn-lihat-hasil poppins-semibold" disabled title="Menunggu petugas mempublish nilai">
                                 Menunggu Koreksi
                             </button>
                         <?php endif; ?>

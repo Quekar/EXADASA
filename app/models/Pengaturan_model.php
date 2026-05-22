@@ -12,7 +12,7 @@ class Pengaturan_model {
         return $this->db->single();
     }
 
-    public function ubahKonfigurasi($data, $files) {
+    public function ubahKonfigurasi(array $data, array $files = []) {
         try {
             $nama_sistem = $data['nama_sistem'];
             $nama_sekolah = $data['nama_sekolah'];
@@ -23,16 +23,18 @@ class Pengaturan_model {
             $logo = $data["logo_old"];
 
             if(isset($files['icon_new']) && $files['icon_new']['error'] === UPLOAD_ERR_OK) {
-                $icon = $this->uploadFile($files['icon_new']);
+                $icon = $this->uploadFile($files['icon_new'], $icon);
             }
 
             if(isset($files['logo_new']) && $files['logo_new']['error'] === UPLOAD_ERR_OK) {
-                $logo = $this->uploadFile($files['logo_new']);
+                $logo = $this->uploadFile($files['logo_new'], $logo);
             }
 
             $konfigurasiOld = $this->getKonfigurasi();
             if($konfigurasiOld) {
-                $this->db->query('UPDATE konfigurasi_sistem SET nama_sistem = :nama_sistem, nama_sekolah = :nama_sekolah, tahun_ajaran = :tahun_ajaran, copyright = :copyright, maintenance = :maintenance, logo = :logo, icon = :icon WHERE id_konfigurasi_sistem = 1');
+                $id_konfigurasi = $konfigurasiOld["id_konfigurasi_sistem"];
+                $this->db->query('UPDATE konfigurasi_sistem SET nama_sistem = :nama_sistem, nama_sekolah = :nama_sekolah, tahun_ajaran = :tahun_ajaran, copyright = :copyright, maintenance = :maintenance, logo = :logo, icon = :icon WHERE id_konfigurasi_sistem = :id_konfigurasi_sistem');
+                $this->db->bind('id_konfigurasi_sistem', $id_konfigurasi);
                 $this->db->bind('nama_sistem', $nama_sistem);
                 $this->db->bind('nama_sekolah', $nama_sekolah);
                 $this->db->bind('tahun_ajaran', $tahun_ajaran);
@@ -41,7 +43,9 @@ class Pengaturan_model {
                 $this->db->bind('logo', $logo);
                 $this->db->bind('icon', $icon);
             } else {
-                $this->db->query('INSERT INTO konfigurasi_sistem (nama_sistem, nama_sekolah, tahun_ajaran, copyright, maintenance, logo, icon) VALUES (:nama_sistem, :nama_sekolah, :tahun_ajaran, :copyright, :maintenance, :logo, :icon)');
+                $id_konfigurasi = "kf_".uniqid();
+                $this->db->query('INSERT INTO konfigurasi_sistem (id_konfigurasi_sistem, nama_sistem, nama_sekolah, tahun_ajaran, copyright, maintenance, logo, icon) VALUES (:id_konfigurasi_sistem, :nama_sistem, :nama_sekolah, :tahun_ajaran, :copyright, :maintenance, :logo, :icon)');
+                $this->db->bind('id_konfigurasi_sistem', $id_konfigurasi);
                 $this->db->bind('nama_sistem', $nama_sistem);
                 $this->db->bind('nama_sekolah', $nama_sekolah);
                 $this->db->bind('tahun_ajaran', $tahun_ajaran);
@@ -54,18 +58,14 @@ class Pengaturan_model {
             $this->db->execute();
             return $this->db->rowCount();
         } catch(PDOException $e) {
-            var_dump($e);
-            exit;
             return false;
         }
     }
 
-    public function uploadFile($data) {
+    public function uploadFile(array $data, $fileLama = null) {
         try {
-            $nama_file = $data["name"];
             $path_file = $data["full_path"];
             $size_file = $data["size"];
-            $error_file = $data["error"];
             $temp_file = $data["tmp_name"];
 
             $extensi_valid = ["png","jpg","jpeg","webp", "PNG", "JPG", "WEBP"];
@@ -81,6 +81,11 @@ class Pengaturan_model {
                 Flasher::setFLash("Ukuran file tidak boleh lebih dari 1 MB", "error");
                 header("Location: " . Constant::DIRNAME . "pengaturan");
                 exit;
+            }
+
+            if($fileLama) {
+                $path_file = "asset/img/" . $fileLama;
+                if(file_exists($path_file)) unlink($path_file);
             }
 
             $nama_file_baru = uniqid() . "." . $extensi;

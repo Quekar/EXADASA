@@ -39,7 +39,6 @@
     <div class="hasil-ujian-list">
         <?php if (!empty($data['riwayat'])) : ?>
             <?php foreach ($data['riwayat'] as $r) : ?>
-                
                 <?php if ($r['publik'] == 1) : ?>
                     <div class="hasil-ujian-card">
                         <div class="skor-ujian" style="background: conic-gradient(#337ceb <?= round($r['nilai']); ?>%, #f0f4f8 0);">
@@ -66,7 +65,6 @@
                         </div>
                         <button class="btn-detail">Detail Jawaban</button>
                     </div>
-
                 <?php else : ?>
                     <div class="hasil-ujian-card">
                         <div class="hasil-ujian-status">
@@ -91,7 +89,10 @@
 
             <?php endforeach; ?>
         <?php else : ?>
-            <p class="poppins-regular" style="text-align: center; width: 100%; color: #64748b; padding: 20px 0;">Belum ada riwayat ujian.</p>
+            <div style="display: flex; flex-direction: column; align-items: center; ">
+                <i class="ph ph-magnifying-glass" style="font-size: 28px; color: var(--color-muted-foreground);"></i>
+                <p class="poppins-regular" style="text-align: center; width: 100%; color: var(--color-muted-foreground); padding: 20px 0;">Belum ada riwayat ujian.</p>
+            </div>
         <?php endif; ?>
     </div>
 </div>

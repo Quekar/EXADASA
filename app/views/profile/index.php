@@ -4,19 +4,23 @@
         <p>Kelola informasi akun dan kata sandimu.</p>
     </header>
 
-    <div class="profile-content">
+    <form action="<?= Constant::DIRNAME ?>profile/update" method="POST" enctype="multipart/form-data"
+        class="profile-content">
         <div class="profile-avatar">
             <div class="avatar-border">
-                <?php if (isset($data['user']['foto']) && $data['user']['foto']): ?>
-                    <img src="<?= Constant::DIRNAME ?>asset/img/<?= $data['user']['foto'] ?>" alt="profile"
-                        style="object-fit: contain;" class="avatar-circle">
-                <?php else: ?>
-                    <div class="avatar-circle" style="text-transform: uppercase;"><?= $data['user']['nama_lengkap'][0] ?></div>
-                <?php endif; ?>
+                <div class="avatar-circle" style="text-transform: uppercase; <?= (isset($data['user']['foto']) && $data['user']['foto']) ? "" : "background: var(--color-gradient-primary);" ?>">
+                    <?php if (isset($data['user']['foto']) && $data['user']['foto']): ?>
+                        <img src="<?= Constant::DIRNAME ?>asset/img/<?= $data['user']['foto'] ?>" alt="profile"
+                            style="object-fit: contain; width: 100%; aspect-ratio: 1 / 1;">
+                    <?php else: ?>
+                        <?= $data['user']['nama_lengkap'][0] ?>
+                    <?php endif; ?>
+                </div>
                 <?php if ($_SESSION['user']['role'] != 'admin'): ?>
                     <label for="input-foto" class="upload-icon" style="cursor: pointer;">
                         <i class="ph ph-camera" title="Ganti Foto"></i>
-                        <input type="file" id="input-foto" name="foto_profil" accept="image/*" style="display: none;">
+                        <input type="hidden" name="foto_old" value="<?= $data["user"]["foto"] ?>">
+                        <input type="file" id="input-foto" name="foto_new" accept="image/*" style="display: none;">
                     </label>
                 <?php endif; ?>
             </div>
@@ -42,21 +46,21 @@
 
         <div class="profile-form">
             <div class="form-card">
-                <form action="<?= Constant::DIRNAME ?>profile/update" method="POST" enctype="multipart/form-data">
+                <div>
                     <div class="form-label">
                         <h3>Informasi Akun</h3>
                         <div class="form-group">
                             <?php if ($_SESSION['user']['role'] != 'admin'): ?>
                                 <div class="form-input">
                                     <label class="poppins-medium">Nama Lengkap</label>
-                                    <input type="text" id="name" name="name" class="poppins-regular"
+                                    <input type="text" id="name" name="nama_lengkap" class="poppins-regular"
                                         value="<?= $data['user']['nama_lengkap'] ?>" required>
                                 </div>
                             <?php endif; ?>
                             <div class="form-input">
                                 <label class="poppins-medium">Username</label>
                                 <input type="text" id="username" name="username" class="poppins-regular"
-                                    value="<?= $data['user']['username'] ?>" required>
+                                    value="<?= $data['user']['username'] ?>" required readonly>
                             </div>
                             <?php if ($_SESSION['user']['role'] != 'admin'): ?>
                                 <div class="form-input">
@@ -102,17 +106,17 @@
                         <button type="reset" class="btn-secondary">Reset</button>
                         <button type="submit" class="btn-primary">Simpan Perubahan</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <script>
-    document.getElementById('input-foto').addEventListener('change', function() {
+    document.getElementById('input-foto').addEventListener('change', function () {
         if (this.files && this.files[0]) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const img = document.querySelector('.avatar-circle');
                 if (img.tagName === 'IMG') {
                     img.src = e.target.result;
@@ -125,7 +129,7 @@
                 }
             }
             reader.readAsDataURL(this.files[0]);
-        
+
         }
     });
 </script>

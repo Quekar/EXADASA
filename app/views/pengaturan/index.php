@@ -31,7 +31,7 @@
                     </div>
                     <div class="form-input">
                         <label class="poppins-medium">Footer</label>
-                        <textarea id="footer" name="copyright" class="poppins-regular"><?= $data['konfigurasi']['copyright'] ?? 'Copyright © 2023 SMANDASA. All rights reserved.'; ?></textarea>
+                        <textarea id="footer" name="copyright" class="poppins-regular" required><?= $data['konfigurasi']['copyright'] ?? 'Copyright © 2023 SMANDASA. All rights reserved.'; ?></textarea>
                     </div>
                 </div>
             </section>
@@ -44,9 +44,9 @@
                     <div class="form-input">
                         <label for="name-sistem" class="poppins-medium">Logo Aplikasi</label>
                         <div class="logo-sistem" style="<?= empty($data['konfigurasi']['logo']) ? "background: var(--color-gradient-primary);" : "" ?>">
-                            <input type="hidden" name="logo_old" value="<?= $data['konfigurasi']['logo'] ?>">
-                            <img id="preview-logo" src="<?= Constant::DIRNAME."asset/img/".$data['konfigurasi']['logo'] ?>" alt="Pratinjau Logo" style="display: <?= isset($data['konfigurasi']['logo']) ? 'block' : 'none' ?>; width: 100%; object-fit: contain; aspect-ratio: 1 / 1;">                          
-                            <i class="ph ph-building-office" id="icon-placeholder-logo" style="all: unset; display: <?= isset($data['konfigurasi']['logo']) ? 'none' : 'block' ?>"></i>
+                            <input type="hidden" name="logo_old" value="<?= $data['konfigurasi']['logo'] ?? '' ?>">
+                            <img id="preview-logo" src="<?= Constant::DIRNAME."asset/img/".$data['konfigurasi']['logo'] ?>" alt="Pratinjau Logo" style="display: <?= isset($data['konfigurasi']['logo']) && $data['konfigurasi']['logo'] ? 'block' : 'none' ?>; width: 100%; object-fit: contain; aspect-ratio: 1 / 1;">                          
+                            <i class="ph ph-building-office" id="icon-placeholder-logo" style="all: unset; display: <?= isset($data['konfigurasi']['logo']) && $data['konfigurasi']['logo'] ? 'none' : 'block' ?>"></i>
                         </div>
                         <div class="btn-upload">
                             <i class="ph ph-upload" style="all: unset;"></i>
@@ -57,9 +57,9 @@
                     <div class="form-input">
                         <label for="name-sistem" class="poppins-medium">Icon Aplikasi</label>
                         <div class="logo-sistem" style="<?= empty($data['konfigurasi']['icon']) ? "background: var(--color-gradient-primary);" : "" ?>">
-                            <input type="hidden" name="icon_old" value="<?= $data['konfigurasi']['icon'] ?>">
-                            <img id="preview-icon" src="<?= Constant::DIRNAME."asset/img/".$data['konfigurasi']['icon'] ?>" alt="Pratinjau Icon" style="display: <?= isset($data['konfigurasi']['icon']) ? 'block' : 'none' ?>; width: 100%; object-fit: contain; aspect-ratio: 1 / 1;">
-                            <i class="ph ph-building-office" id="icon-placeholder-icon" style="all: unset; display: <?= isset($data['konfigurasi']['icon']) ? 'none' : 'block' ?>"></i>
+                            <input type="hidden" name="icon_old" value="<?= $data['konfigurasi']['icon'] ?? '' ?>">
+                            <img id="preview-icon" src="<?= Constant::DIRNAME."asset/img/".$data['konfigurasi']['icon'] ?>" alt="Pratinjau Icon" style="display: <?= isset($data['konfigurasi']['icon']) && $data['konfigurasi']['icon'] ? 'block' : 'none' ?>; width: 100%; object-fit: contain; aspect-ratio: 1 / 1;">
+                            <i class="ph ph-building-office" id="icon-placeholder-icon" style="all: unset; display: <?= isset($data['konfigurasi']['icon']) && $data['konfigurasi']['icon'] ? 'none' : 'block' ?>"></i>
                         </div>
                         <div class="btn-upload" >
                             <i class="ph ph-upload" style="all: unset;"></i>

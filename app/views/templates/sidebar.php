@@ -2,7 +2,7 @@
     <aside id="sidebar">
         <header>
             <a href="#hero" style="all: inherit; cursor: pointer; display: flex; align-items: center; gap: 10px;">
-                <?php if (isset($data["konfigurasi"]["logo"])): ?>
+                <?php if (isset($data["konfigurasi"]["logo"]) && $data['konfigurasi']['logo']): ?>
                     <img src="<?= Constant::DIRNAME . 'asset/img/' . $data["konfigurasi"]["logo"] ?>" alt="Logo" style="width: 40px; height: 40px; object-fit: contain;">
                 <?php else: ?>
                     <i class="ph ph-graduation-cap bg-icon-primary" style="font-size: 20px; color: #fff;"></i>

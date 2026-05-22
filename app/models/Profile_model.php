@@ -15,16 +15,15 @@ class Profile_model
             if ($role == 'siswa') {
                 $this->db->query('SELECT u.password, s.foto, s.nisn as username, s.nama_lengkap, s.email, k.tingkat as kelas, j.singkatan_jurusan as jurusan FROM users as u JOIN siswa as s ON s.nisn = u.username JOIN data_siswa as ds ON ds.nisn = s.nisn JOIN kelas as k ON k.id_kelas = ds.id_kelas JOIN jurusan as j ON j.id_jurusan = ds.id_jurusan WHERE s.nisn = :id_user');
                 $this->db->bind('id_user', $id_user);
-                return $this->db->single();
             } else if ($role == 'petugas') {
                 $this->db->query('SELECT u.password, p.foto, p.nip as username, p.nama_lengkap, p.email FROM users as u JOIN petugas as p ON u.username = p.nip WHERE nip = :id_user');
                 $this->db->bind('id_user', $id_user);
-                return $this->db->single();
             } else {
-                $this->db->query('SELECT username as nama_lengkap, username as username, role FROM users WHERE username = :id_user');
+                $this->db->query('SELECT password, username as nama_lengkap, username as username, role FROM users WHERE username = :id_user');
                 $this->db->bind('id_user', $id_user);
-                return $this->db->single();
             }
+
+            return $this->db->single();
         } catch (PDOException $e) {
             return null;
         }
@@ -41,95 +40,112 @@ class Profile_model
         }
     }
 
-    public function prosesUpdate($post, $files, $sessionUser)
-    {
-        $role = $sessionUser['role'];
-        $username = $sessionUser['username'];
-        $db_user = $this->getUserByRole($username, $role);
-
-        $updateData = [
-            'id' => $username,
-            'nama' => $post['name'] ?? $db_user['nama_lengkap'],
-            'email' => $post['email'] ?? $db_user['email']
-        ];
-
-        if (isset($files['foto_profil']) && $files['foto_profil']['error'] == 0) {
-            $namaFile = $files['foto_profil']['name'];
-            $ekstensi = pathinfo($namaFile, PATHINFO_EXTENSION);
-            $namaBaru = uniqid() . '.' . $ekstensi;
-            $tujuan = 'asset/img/' . $namaBaru;
-
-            if (move_uploaded_file($files['foto_profil']['tmp_name'], $tujuan)) {
-                $updateData['foto'] = $namaBaru;
-                $_SESSION['user']['foto'] = $namaBaru;
-            }
-        }
-
-        $this->updateProfile($updateData, $role);
-        $_SESSION['user']['nama_lengkap'] = $updateData['nama'];
-
-        if (!empty($post['current_password']) && !empty($post['new_password'])) {
-            if (password_verify($post['current_password'], $db_user['password'])) {
-                if ($post['new_password'] === $post['confirm_password']) {
-                    $this->updatePassword($username, $post['new_password']);
-                    return ['status' => 'success', 'message' => 'Profil dan Kata sandi berhasil diperbarui'];
-                } else {
-                    return ['status' => 'error', 'message' => 'Konfirmasi kata sandi tidak cocok'];
-                }
-            } else {
-                return ['status' => 'error', 'message' => 'Kata sandi lama salah'];
-            }
-        }
-
-        return ['status' => 'success', 'message' => 'Profil berhasil diperbarui'];
-    }
-
-    private function updateProfile($data, $role)
+    public function updateProfile(array $data, array $file, string $role)
     {
         try {
-            $this->db->beginTransaction();
+            $username = $data['username'];
+            if ($role == "siswa" || $role == "petugas") {
+                $nama_lengkap = $data['nama_lengkap'];
+                $email = $data['email'];
+                $foto = $data["foto_old"];
 
-            if ($role == 'siswa') {
-                $query = "UPDATE siswa SET nama_lengkap = :nama, email = :email";
-                if (isset($data['foto'])) $query .= ", foto = :foto";
-                $query .= " WHERE nisn = :id";
-                
-                $this->db->query($query);
-                $this->db->bind('id', $data['id']);
-                $this->db->bind('nama', $data['nama']);
-                $this->db->bind('email', $data['email']);
-                if (isset($data['foto'])) $this->db->bind('foto', $data['foto']);
-                $this->db->execute();
-            } else if ($role == 'petugas') {
-                $query = "UPDATE petugas SET nama_lengkap = :nama, email = :email";
-                if (isset($data['foto'])) $query .= ", foto = :foto";
-                $query .= " WHERE nip = :id";
+                if (isset($file["foto_new"]) && $file["foto_new"]["error"] == UPLOAD_ERR_OK) {
+                    $foto = $this->uploadFile($file["foto_new"], $foto);
+                }
 
-                $this->db->query($query);
-                $this->db->bind('id', $data['id']);
-                $this->db->bind('nama', $data['nama']);
-                $this->db->bind('email', $data['email']);
-                if (isset($data['foto'])) $this->db->bind('foto', $data['foto']);
+                if ($role == "siswa") {
+                    $this->db->query("UPDATE siswa SET foto = :foto, nama_lengkap = :nama_lengkap, email = :email WHERE nisn = :username");
+                } else {
+                    $this->db->query("UPDATE petugas SET foto = :foto, nama_lengkap = :nama_lengkap, email = :email WHERE nip = :username");
+                }
+
+                $this->db->bind('username', $username);
+                $this->db->bind('foto', $foto);
+                $this->db->bind('nama_lengkap', $nama_lengkap);
+                $this->db->bind('email', $email);
                 $this->db->execute();
+                if($this->db->rowCount() > 0) $_SESSION['user']["nama_lengkap"] = $nama_lengkap;
             }
 
-            $this->db->commit();
+            if ($data["current_password"] && $data["new_password"] && $data["confirm_password"]) {
+                $password_new = $data["new_password"];
+                $password_old = $data["current_password"];
+                $confirm_password = $data["confirm_password"];
+
+                if ($password_new != $confirm_password) {
+                    Flasher::setFlash("Konfirmasi password tidak sesuai", "error");
+                    header("Location: " . Constant::DIRNAME . "profile");
+                    exit;
+                }
+
+                $user = $this->getUserByRole($username, $role);
+                if (password_verify($password_old, $user["password"])) {
+                    $result = $this->updatePassword($username, $password_new);
+                    if (!$result) {
+                        Flasher::setFlash("Password gagal diubah", "success");
+                        header("Location: " . Constant::DIRNAME . "profile");
+                        exit;
+                    } 
+                } else {
+                    Flasher::setFlash("Password lama tidak sesuai", "error");
+                    header("Location: " . Constant::DIRNAME . "profile");
+                    exit;
+                }
+            } 
+
             return true;
         } catch (PDOException $e) {
-            $this->db->rollBack();
             return false;
         }
     }
 
-    private function updatePassword($username, $new_password)
+    private function updatePassword(string $username, string $new_password)
     {
         try {
             $hash = password_hash($new_password, PASSWORD_BCRYPT);
-            $this->db->query("UPDATE users SET password = :pass WHERE username = :user");
+            $this->db->query("UPDATE users SET password = :pass WHERE username = :id_user");
             $this->db->bind('pass', $hash);
-            $this->db->bind('user', $username);
+            $this->db->bind('id_user', $username);
             $this->db->execute();
             return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function uploadFile(array $data, $fileLama = null)
+    {
+        try {
+            $path_file = $data["full_path"];
+            $size_file = $data["size"];
+            $temp_file = $data["tmp_name"];
+
+            $extensi_valid = ["png", "jpg", "jpeg", "webp", "PNG", "JPG", "WEBP"];
+            $extensi = pathinfo($path_file, PATHINFO_EXTENSION);
+            if (in_array($extensi, $extensi_valid) == false) {
+                Flasher::setFLash("Extension tidak valid", "error");
+                header("Location: " . Constant::DIRNAME . "pengaturan");
+                exit;
+            }
+
+            //cek size 
+            if ($size_file > 1000000) {
+                Flasher::setFLash("Ukuran file tidak boleh lebih dari 1 MB", "error");
+                header("Location: " . Constant::DIRNAME . "pengaturan");
+                exit;
+            }
+
+            if ($fileLama) {
+                $path_file = "asset/img/" . $fileLama;
+                if (file_exists($path_file))
+                    unlink($path_file);
+            }
+
+            $nama_file_baru = uniqid() . "." . $extensi;
+            move_uploaded_file($temp_file, "asset/img/" . $nama_file_baru);
+
+            $_SESSION['user']['foto'] = $nama_file_baru;
+            return $nama_file_baru;
         } catch (PDOException $e) {
             return false;
         }

@@ -5,7 +5,7 @@
                 <p class="banner-sapaan">Selamat pagi 👋</p>
                 <h1 class="banner-user">Halo, <?= $data['user_siswa']['nama_lengkap'] ?? 'Siswa'; ?></h1>
                 <p class="banner-description">Kamu punya <strong><?= $data['statistik']['ujian_hari_ini'] ?? 0; ?> ujian aktif</strong> hari ini. Tetap fokus dan semangat!</p>
-                <button class="btn-lihat-ujian poppins-medium" onclick="window.location.href='<?= Constant::DIRNAME ?>ujian'">Lihat Ujian Saya <i class="ph ph-arrow-right"></i></button>
+                <button class="btn-lihat-ujian poppins-medium" onclick="window.location.href='<?= Constant::DIRNAME ?>ujiansiswa'">Lihat Ujian Saya <i class="ph ph-arrow-right"></i></button>
             </div>
 
             <div class="banner-info">
@@ -160,7 +160,7 @@
             <div class="dashboard-upcoming-exam">
                 <div class="upcoming-exam-header">
                     <h2>Ujian Hari Ini</h2>
-                    <a href="<?= Constant::DIRNAME ?>ujian" class="btn-lihat-semua">Lihat Semua</a>
+                    <a href="<?= Constant::DIRNAME. $_SESSION['user']['role'] == 'siswa' ? 'ujiansiswa' : 'ujian' ?>" class="btn-lihat-semua">Lihat Semua</a>
                 </div>
 
                 <div class="upcoming-exam-list">

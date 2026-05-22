@@ -10,6 +10,7 @@
         </button>
     </header>
     <section class="box-card">
+        <?php if(count($data["pengumuman"]) > 0): ?>
         <?php foreach ($data['pengumuman'] as $p) : ?>
             <div class="card">
                 <div class="card-header">
@@ -39,6 +40,12 @@
                 </div>
             </div>
         <?php endforeach; ?>
+        <?php else: ?>
+            <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; grid-column: 1/-1; margin: 80px 0;">
+                <i class="ph ph-megaphone" style="font-size: 28px; color: var(--color-muted-foreground);"></i>
+                <p style="padding: 20px; color: #64748b;">Belum ada pengumuman.</p>
+            </div>
+        <?php endif; ?>
     </section>
 </div>
 
