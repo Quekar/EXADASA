@@ -169,19 +169,24 @@ $persentase = $data['persentase'];
                         </div>
                     </div>
 
-                            
-                        <?php if($_SESSION["user"]["role"] != "siswa"): ?>
-                    <div class="koreksi-actions">
-                        <span class="koreksi-actions__label poppins-medium"><i class="ph ph-pencil-simple"></i> Penilaian Petugas:</span>
-                        <div class="koreksi-actions__buttons">
-                            <button type="button" class="koreksi-btn koreksi-btn--benar <?= $q['status'] === 'benar' ? 'koreksi-btn--active' : '' ?> poppins-semibold" data-no="<?= $q['no'] ?>" data-value="benar" data-skor="<?= $q['skor_max'] ?>">
-                                <i class="ph ph-check-circle"></i> Benar
-                            </button>
-                            <button type="button" class="koreksi-btn koreksi-btn--salah <?= $q['status'] === 'salah' ? 'koreksi-btn--active' : '' ?> poppins-semibold" data-no="<?= $q['no'] ?>" data-value="salah" data-skor="<?= $q['skor_max'] ?>">
-                                <i class="ph ph-x-circle"></i> Salah
-                            </button>
+
+                    <?php if ($_SESSION["user"]["role"] != "siswa"): ?>
+                        <div class="koreksi-actions">
+                            <span class="koreksi-actions__label poppins-medium"><i class="ph ph-pencil-simple"></i> Penilaian
+                                Petugas:</span>
+                            <div class="koreksi-actions__buttons">
+                                <button type="button"
+                                    class="koreksi-btn koreksi-btn--benar <?= $q['status'] === 'benar' ? 'koreksi-btn--active' : '' ?> poppins-semibold"
+                                    data-no="<?= $q['no'] ?>" data-value="benar" data-id-bank-soal="<?= $q['id_bank_soal'] ?>" data-id-ujian-siswa="<?= $q['id_ujian_siswa'] ?>" data-dirname="<?= Constant::DIRNAME ?>" data-skor="<?= $q['skor_max'] ?>">
+                                    <i class="ph ph-check-circle"></i> Benar
+                                </button>
+                                <button type="button"
+                                    class="koreksi-btn koreksi-btn--salah <?= $q['status'] === 'salah' ? 'koreksi-btn--active' : '' ?> poppins-semibold"
+                                    data-no="<?= $q['no'] ?>" data-value="salah" data-id-bank-soal="<?= $q['id_bank_soal'] ?>" data-id-ujian-siswa="<?= $q['id_ujian_siswa'] ?>" data-dirname="<?= Constant::DIRNAME ?>" data-skor="<?= $q['skor_max'] ?>">
+                                    <i class="ph ph-x-circle"></i> Salah
+                                </button>
+                            </div>
                         </div>
-                    </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -189,56 +194,58 @@ $persentase = $data['persentase'];
     </div>
 
 
-    <?php if($_SESSION["user"]["role"] != "siswa"): ?>
-    <div class="simpan-nilai-section" id="simpanNilaiSection">
-        <div class="simpan-nilai-card">
-            <div class="simpan-nilai__header">
-                <h3 class="poppins-semibold"><i class="ph ph-exam"></i> Ringkasan Koreksi</h3>
-                <span class="simpan-nilai__badge poppins-medium" id="badgeStatusKoreksi">
-                    <i class="ph ph-clock"></i> Belum Lengkap
-                </span>
-            </div>
-            <div class="simpan-nilai__stats">
-                <div class="simpan-nilai__stat simpan-nilai__stat--benar">
-                    <i class="ph ph-check-circle"></i>
-                    <div>
-                        <span class="stat-label poppins-regular">Benar</span>
-                        <span class="stat-value poppins-bold" id="totalBenarKoreksi">0</span>
+    <?php if ($_SESSION["user"]["role"] != "siswa"): ?>
+        <div class="simpan-nilai-section" id="simpanNilaiSection">
+            <div class="simpan-nilai-card">
+                <div class="simpan-nilai__header">
+                    <h3 class="poppins-semibold"><i class="ph ph-exam"></i> Ringkasan Koreksi</h3>
+                    <span class="simpan-nilai__badge poppins-medium" id="badgeStatusKoreksi">
+                        <i class="ph ph-clock"></i> Belum Lengkap
+                    </span>
+                </div>
+                <div class="simpan-nilai__stats">
+                    <div class="simpan-nilai__stat simpan-nilai__stat--benar">
+                        <i class="ph ph-check-circle"></i>
+                        <div>
+                            <span class="stat-label poppins-regular">Benar</span>
+                            <span class="stat-value poppins-bold" id="totalBenarKoreksi">0</span>
+                        </div>
+                    </div>
+                    <div class="simpan-nilai__stat simpan-nilai__stat--salah">
+                        <i class="ph ph-x-circle"></i>
+                        <div>
+                            <span class="stat-label poppins-regular">Salah</span>
+                            <span class="stat-value poppins-bold" id="totalSalahKoreksi">0</span>
+                        </div>
+                    </div>
+                    <div class="simpan-nilai__stat simpan-nilai__stat--belum">
+                        <i class="ph ph-hourglass"></i>
+                        <div>
+                            <span class="stat-label poppins-regular">Belum Dinilai</span>
+                            <span class="stat-value poppins-bold" id="totalBelumKoreksi"><?= $totalSoal ?></span>
+                        </div>
+                    </div>
+                    <div class="simpan-nilai__stat simpan-nilai__stat--skor">
+                        <i class="ph ph-trophy"></i>
+                        <div>
+                            <span class="stat-label poppins-regular">Skor</span>
+                            <span class="stat-value poppins-bold"><span id="skorKoreksi">0</span> / <?= $skorMax ?> <small
+                                    class="poppins-regular">(<span id="persenKoreksi">0</span>%)</small></span>
+                        </div>
                     </div>
                 </div>
-                <div class="simpan-nilai__stat simpan-nilai__stat--salah">
-                    <i class="ph ph-x-circle"></i>
-                    <div>
-                        <span class="stat-label poppins-regular">Salah</span>
-                        <span class="stat-value poppins-bold" id="totalSalahKoreksi">0</span>
-                    </div>
+                <div class="simpan-nilai__warning" id="warningBelumLengkap">
+                    <i class="ph ph-warning-circle"></i>
+                    <span class="poppins-medium">Masih ada soal yang belum dikoreksi. Tandai semua soal terlebih
+                        dahulu.</span>
                 </div>
-                <div class="simpan-nilai__stat simpan-nilai__stat--belum">
-                    <i class="ph ph-hourglass"></i>
-                    <div>
-                        <span class="stat-label poppins-regular">Belum Dinilai</span>
-                        <span class="stat-value poppins-bold" id="totalBelumKoreksi"><?= $totalSoal ?></span>
-                    </div>
+                <div class="simpan-nilai__actions">
+                    <button type="button" class="btn-simpan-nilai poppins-semibold" id="btnSimpanNilai" disabled>
+                        <i class="ph ph-floppy-disk"></i> Simpan Nilai
+                    </button>
                 </div>
-                <div class="simpan-nilai__stat simpan-nilai__stat--skor">
-                    <i class="ph ph-trophy"></i>
-                    <div>
-                        <span class="stat-label poppins-regular">Skor</span>
-                        <span class="stat-value poppins-bold"><span id="skorKoreksi">0</span> / <?= $skorMax ?> <small class="poppins-regular">(<span id="persenKoreksi">0</span>%)</small></span>
-                    </div>
-                </div>
-            </div>
-            <div class="simpan-nilai__warning" id="warningBelumLengkap">
-                <i class="ph ph-warning-circle"></i>
-                <span class="poppins-medium">Masih ada soal yang belum dikoreksi. Tandai semua soal terlebih dahulu.</span>
-            </div>
-            <div class="simpan-nilai__actions">
-                <button type="button" class="btn-simpan-nilai poppins-semibold" id="btnSimpanNilai" disabled>
-                    <i class="ph ph-floppy-disk"></i> Simpan Nilai
-                </button>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <div class="bottom-action-bar">

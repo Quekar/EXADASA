@@ -84,11 +84,12 @@ class Koreksi extends Controller
             $status = ($q['jawaban_siswa'] === $q['kunci']) ? 'benar' : 'salah';
             if($q["jawaban_benar"]) $status = ($q["jawaban_benar"] === $q["jawaban_siswa"]) ? 'benar' : 'salah';
             if($q["benar"]) $status = 'benar';
+
             $skor = ($status === 'benar') ? $q['skor_max'] : 0;
             $opsi = [];
             if ($q['ja']) $opsi['A'] = $q['ja'];
             if ($q['jb']) $opsi['B'] = $q['jb'];
-            if ($q['jc']) $opsi['C'] = $q['jc'];
+            if ($q['jc'] != null) $opsi['C'] = $q['jc'];
             if ($q['jd']) $opsi['D'] = $q['jd'];
 
             $map = ['ja' => 'A', 'jb' => 'B', 'jc' => 'C', 'jd' => 'D'];
@@ -103,7 +104,9 @@ class Koreksi extends Controller
                 'kunci' => $kunci_mapped,
                 'skor_max' => $q['skor_max'],
                 'skor' => $skor,
-                'status' => $status
+                'status' => $status,
+                'id_bank_soal' => $q['id_bank_soal'],
+                'id_ujian_siswa' => $q['id_ujian_siswa'],
             ];
         }
 
@@ -217,5 +220,17 @@ class Koreksi extends Controller
         }
         header('location: ' . Constant::DIRNAME . 'koreksi');
         exit;
+    }
+
+    public function koreksiUjian() {
+        if($_SESSION['user']['role'] === "siswa") {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+
+        $data = file_get_contents('php://input');
+        $data = json_decode($data, true);
+
+        echo json_encode($this->model('Koreksi_model')->ubahUjianSiswa($data));
     }
 }

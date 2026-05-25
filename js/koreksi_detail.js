@@ -40,10 +40,26 @@ document.addEventListener('DOMContentLoaded', function () {
     updateKoreksiSummary();
 
     koreksiBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', async function () {
             const no = this.dataset.no;
             const value = this.dataset.value;
             const skor = parseInt(this.dataset.skor);
+            const idBankSoal = this.dataset.idBankSoal;
+            const idUjianSiswa = this.dataset.idUjianSiswa;
+            const dirname = this.dataset.dirname;
+
+            const res = await fetch(`${dirname}koreksi/koreksiUjian`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_bank_soal: idBankSoal, id_ujian_siswa: idUjianSiswa, koreksi: value, jawaban: null })
+            });
+
+            const data = await res.json();
+            console.log(data);
+            if(!data) {
+                showToast('error','Gagal mengubah koreksi.');
+                return;
+            }
 
             const parent = this.closest('.koreksi-actions__buttons');
             parent.querySelectorAll('.koreksi-btn').forEach(b => {
