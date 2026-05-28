@@ -179,17 +179,8 @@ $now       = time();
     </div>
 </div>
 
-<style>
-@keyframes spin { to { transform: rotate(360deg); } }
-.spin { animation: spin 0.8s linear infinite; display:inline-block; }
-.card-footer__btn { width: 100%; padding: 11px 20px; border-radius: 12px; font-size: 0.92rem; cursor: pointer; transition: all 0.25s ease; border: none; display: block; text-align: center; text-decoration: none; }
-.btn-masuk-ujian { background: var(--color-gradient-primary); color: #fff; }
-.btn-masuk-ujian:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-lanjutkan { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; }
-.btn-lihat-hasil { background: transparent; color: var(--color-foreground); border: 1.5px solid #d0d9e6; }
-.btn-lihat-hasil:hover:not(:disabled) { background: #f1f5f9; }
-.input-error { border-color: #ef4444 !important; }
-</style>
+
+
 
 <script>
 const DIRNAME_US = "<?= $DIRNAME ?>";

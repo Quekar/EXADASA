@@ -9,9 +9,6 @@
     <meta name="keyword" content="ujian, ujian online, Aplikasi ujian" />
     <title><?= $data["title"] ?></title>
     <link rel="stylesheet" href="<?= Constant::DIRNAME ?>css/global.css">
-    <?php if (isset($data['css'])): ?>
-        <link rel="stylesheet" href="<?= Constant::DIRNAME ?>css/<?= $data['css'] ?>.css">
-    <?php endif ?>
 
     <!-- ICON -->
     <link rel="stylesheet" type="text/css"
@@ -28,6 +25,6 @@
     <!-- TOAST -->
      <script src="<?= Constant::DIRNAME ?>js/toast.js"></script>
 </head>
-<body>
+<body class="<?= isset($data['css']) ? str_replace(['style.', '.'], ['', '-'], $data['css']) : '' ?>">
 
 <?php Flasher::getFlash() ?>

@@ -29,7 +29,6 @@
             <span id="soalCount" style="margin-right: 5px;"><?= count($data['soal']) ?></span> soal
         </div>
     </div>
-
     <div class="soal-grid" id="soalGrid">
         <?php if (count($data['soal']) > 0): ?>
             <?php foreach ($data['soal'] as $index => $s): ?>
