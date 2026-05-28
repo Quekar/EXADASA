@@ -99,10 +99,15 @@ $DIRNAME = Constant::DIRNAME;
                                 <i class="ph ph-caret-left"></i> Sebelumnya
                             </button>
 
-                            <button class="btn-next poppins-semibold" onclick="pindahSoal(<?= $no + 1 ?>)"
-                                <?= $isLast ? 'disabled' : '' ?>>
-                                Selanjutnya <i class="ph ph-caret-right"></i>
-                            </button>
+                            <?php if ($isLast): ?>
+                                <button class="btn-next btn-next--submit poppins-semibold" onclick="bukaModalSubmit()">
+                                    <i class="ph ph-paper-plane-tilt"></i> Submit
+                                </button>
+                            <?php else: ?>
+                                <button class="btn-next poppins-semibold" onclick="pindahSoal(<?= $no + 1 ?>)">
+                                    Selanjutnya <i class="ph ph-caret-right"></i>
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
