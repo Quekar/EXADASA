@@ -53,14 +53,11 @@
                     <i class="ph ph-eye"></i>
                 </div>
             </section>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin: 4px 0;">
+            <div style="display: flex; align-items: center; justify-content: flex-start; margin: 4px 0;">
                 <label for="remember" style="font-size: 13px; display: flex; align-items: center;">
                     <input type="checkbox" name="remember" id="remember" style="margin-right: 8px; width: 20px;">
                     Ingat saya
                 </label>
-                <a href="" class="poppins-regular"
-                    style="font-size: 12px; color: var(--color-primary); text-decoration: none;">Lupa
-                    password?</a>
             </div>
             <button class="btn-primary poppins-semibold" style="width: 100%;">
                 Masuk

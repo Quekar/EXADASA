@@ -276,8 +276,9 @@
                 <div class="tab-content" id="siswa-csv">
                     <div class="alert-info">
                         <i class="ph ph-info"></i>
-                        <p>Pendaftaran massal siswa menggunakan format file CSV. Pastikan format kolom sesuai dengan
-                            template sistem.</p>
+                        <p style="line-height: 1.5;">
+                            Pendaftaran massal siswa menggunakan format file CSV. Silakan unduh <a href="<?= Constant::DIRNAME ?>pengguna/unduh_template_csv" style="color: #3b82f6; font-weight: 600; text-decoration: underline;">Template CSV ini</a>, isi dengan data siswa Anda, lalu unggah berkas tersebut di bawah ini.
+                        </p>
                     </div>
                     <div class="csv-upload-area" onclick="document.getElementById('csvFile').click()">
                         <i class="ph ph-cloud-arrow-up"></i>

@@ -269,7 +269,7 @@
                                     <input type="hidden" name="id_bank_soal_manual[]" value="<?= $s['id_bank_soal'] ?>">
                                     <div class="form-input" style="margin-bottom: 15px;">
                                         <label>Pertanyaan</label>
-                                        <textarea name="soal_text[]" rows="2" required><?= $s['pertanyaan'] ?></textarea>
+                                        <textarea name="soal_text[]" rows="2"><?= $s['pertanyaan'] ?></textarea>
                                     </div>
                                     <div class="form-input" style="margin-bottom: 15px;">
                                         <label><i class="ph ph-image"></i> Gambar (Opsional)</label>
@@ -288,7 +288,7 @@
                                                 <input type="radio" name="jawaban_benar[<?= $index ?>]" value="<?= $opt ?>"
                                                     <?= ($s['answer'] == 'j' . strtolower($opt)) ? 'checked' : '' ?>>
                                                 <input type="text" name="opsi_<?= strtolower($opt) ?>[]"
-                                                    value="<?= $s['j' . strtolower($opt)] ?>" placeholder="Opsi <?= $opt ?>" required>
+                                                    value="<?= $s['j' . strtolower($opt)] ?>" placeholder="Opsi <?= $opt ?>">
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
@@ -306,7 +306,10 @@
                 <div class="import-csv-box"
                     style="border: 2px dashed #3b82f6; border-radius: 12px; padding: 40px; text-align: center; background: #f8fafc;">
                     <i class="ph ph-cloud-arrow-up" style="font-size: 48px; color: #3b82f6;"></i>
-                    <h3 style="margin-top: 15px;">Upload File CSV</h3>
+                    <h3 style="margin-top: 15px; margin-bottom: 5px;">Upload File CSV</h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
+                        Silakan unduh <a href="<?= Constant::DIRNAME ?>ujian/unduh_template_csv" style="color: #3b82f6; font-weight: 600; text-decoration: underline;">Template CSV ini</a>, isi dengan soal-soal Anda, lalu pilih berkas tersebut di bawah ini untuk diunggah secara instan.
+                    </p>
                     <input type="file" name="file_csv" id="file_csv" accept=".csv" style="display: none;">
                     <button type="button" class="btn-simpan" onclick="document.getElementById('file_csv').click()">Pilih
                         File</button>
@@ -326,7 +329,7 @@
                 <input type="hidden" name="id_bank_soal_manual[]" value="">
                 <div class="form-input" style="margin-bottom: 15px;">
                     <label>Pertanyaan</label>
-                    <textarea name="soal_text[]" rows="2" required></textarea>
+                    <textarea name="soal_text[]" rows="2"></textarea>
                 </div>
                 <div class="form-input" style="margin-bottom: 15px;">
                     <label><i class="ph ph-image"></i> Gambar (Opsional)</label>
@@ -336,7 +339,7 @@
                     <?php foreach (['A', 'B', 'C', 'D'] as $opt): ?>
                         <div class="option-row">
                             <input type="radio" name="jawaban_benar[INDEX]" value="<?= $opt ?>">
-                            <input type="text" name="opsi_<?= strtolower($opt) ?>[]" placeholder="Opsi <?= $opt ?>" required>
+                            <input type="text" name="opsi_<?= strtolower($opt) ?>[]" placeholder="Opsi <?= $opt ?>">
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -365,7 +368,14 @@
 
         function hapusSoal(btn) {
             if (confirm('Hapus soal ini?')) {
-                btn.closest('.soal-item').remove();
+                const soalCard = btn.closest('.soal-item');
+                const idInput = soalCard.querySelector('input[name="id_bank_soal_manual[]"]');
+                if (idInput && idInput.value) {
+                    const idBankSoal = idInput.value;
+                    const checkboxes = document.querySelectorAll(`input[name="selected_soal[]"][value="${idBankSoal}"]`);
+                    checkboxes.forEach(cb => cb.checked = false);
+                }
+                soalCard.remove();
                 aturUlangNomor();
             }
         }
@@ -387,18 +397,37 @@
                 if (key === mode) {
                     sections[key].style.display = 'block';
                     buttons[key].classList.add('active');
-                    sections[key].querySelectorAll('input, textarea, select').forEach(el => el.disabled = false);
                 } else {
                     sections[key].style.display = 'none';
                     buttons[key].classList.remove('active');
-                    if (key !== 'bank' || mode === 'csv') {
-                        sections[key].querySelectorAll('input, textarea, select').forEach(el => {
-                            if (el.name !== 'selected_soal[]') el.disabled = true;
-                        });
-                    }
                 }
             });
         }
+
+        document.getElementById('form-ujian').onsubmit = function(e) {
+            const soalItems = document.querySelectorAll('.soal-item');
+            let valid = true;
+            
+            soalItems.forEach((soal, index) => {
+                const text = soal.querySelector('textarea[name="soal_text[]"]').value.trim();
+                const opsiA = soal.querySelector('input[name="opsi_a[]"]').value.trim();
+                const opsiB = soal.querySelector('input[name="opsi_b[]"]').value.trim();
+                const opsiC = soal.querySelector('input[name="opsi_c[]"]').value.trim();
+                const opsiD = soal.querySelector('input[name="opsi_d[]"]').value.trim();
+                const radioChecked = soal.querySelector(`input[type="radio"][name="jawaban_benar[${index}]"]:checked`);
+                
+                if (text === '' || opsiA === '' || opsiB === '' || opsiC === '' || opsiD === '' || !radioChecked) {
+                    valid = false;
+                }
+            });
+            
+            if (!valid) {
+                e.preventDefault();
+                alert('Mohon lengkapi seluruh pertanyaan, opsi jawaban, dan kunci jawaban pada input manual!');
+                switchMode('manual');
+                return false;
+            }
+        };
 
         function filterBankSoal() {
             const kategori = document.getElementById('filterBankKategori').value;

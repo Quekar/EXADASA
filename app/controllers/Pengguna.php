@@ -25,10 +25,23 @@ class Pengguna extends Controller
             exit;
         }
 
-        $role = $_POST['role'];
+        $role = $_POST['role'] ?? '';
         $data = [];
 
         if ($role == 'siswa') {
+            if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] == 0) {
+                if ($this->model('Register_model')->importSiswaFromCSV($_FILES['csv_file'])) {
+                    $this->model('Dashboard_model')->insertLog($_SESSION['user']['username'], 'Mengimpor siswa dari CSV');
+                    Flasher::setFlash('Siswa berhasil diimpor dari CSV', 'success');
+                    header('location: ' . Constant::DIRNAME . 'pengguna');
+                    exit;
+                } else {
+                    Flasher::setFlash('Siswa gagal diimpor dari CSV', 'error');
+                    header('location: ' . Constant::DIRNAME . 'pengguna');
+                    exit;
+                }
+            }
+
             $data = [
                 'role' => 'siswa',
                 'nisn' => $_POST['nisn'],
@@ -92,5 +105,32 @@ class Pengguna extends Controller
             header('location: ' . Constant::DIRNAME . 'pengguna');
             exit;
         }
+    }
+
+    public function unduh_template_csv() {
+        if ($_SESSION['user']['role'] !== "admin") {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=template_import_siswa.csv');
+        
+        $output = fopen('php://output', 'w');
+        
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        fputcsv($output, ['NISN', 'Nama Lengkap', 'Email', 'Tingkat Kelas (10/11/12)', 'Singkatan Jurusan (RPL/TKJ/dll)']);
+        
+        $majors = $this->model('Jurusan_model')->getAllJurusan();
+        $sample_major = !empty($majors) ? $majors[0]['singkatan_jurusan'] : 'RPL';
+        
+        fputcsv($output, ['2417051049', 'M. Rafly Saputra', '966raflisaputra@gmail.com', '12', $sample_major]);
+        fputcsv($output, ['2417051011', 'M. Surya Gymnastyar', 'surya@gmai.com', '12', $sample_major]);
+        fputcsv($output, ['2417051020', 'Rheal', 'rheal@gmai.com', '12', $sample_major]);
+        fputcsv($output, ['2417051030', 'Andhika', 'andika@gmai.com', '12', $sample_major]);
+
+        fclose($output);
+        exit;
     }
 }

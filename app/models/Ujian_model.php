@@ -188,6 +188,13 @@ class Ujian_model
                 }
             }
 
+            if (isset($file['file_csv']) && $file['file_csv']['error'] == 0) {
+                $new_csv_soal_ids = $this->importSoalFromCSV($file['file_csv']);
+                foreach ($new_csv_soal_ids as $id_bs) {
+                    $unique_soal_ids[$id_bs] = true;
+                }
+            }
+
             if (isset($data['soal_text'])) {
                 foreach ($data['soal_text'] as $index => $text) {
                     if (empty($text))
@@ -302,6 +309,13 @@ class Ujian_model
                 }
             }
 
+            if (isset($file['file_csv']) && $file['file_csv']['error'] == 0) {
+                $new_csv_soal_ids = $this->importSoalFromCSV($file['file_csv']);
+                foreach ($new_csv_soal_ids as $id_bs) {
+                    $unique_soal_ids[$id_bs] = true;
+                }
+            }
+
             if (isset($data['soal_text'])) {
                 foreach ($data['soal_text'] as $index => $text) {
                     if (empty($text))
@@ -411,6 +425,113 @@ class Ujian_model
         }
     }
 
+    public function importSoalFromCSV($file)
+    {
+        $new_ids = [];
+        try {
+            $filepath = $file['tmp_name'];
+            if (($handle = fopen($filepath, "r")) !== FALSE) {
+                $firstLine = fgets($handle);
+                if ($firstLine === FALSE) {
+                    fclose($handle);
+                    return [];
+                }
+                
+                if (substr($firstLine, 0, 3) == "\xEF\xBB\xBF") {
+                    $firstLine = substr($firstLine, 3);
+                }
+                
+                $separator = ",";
+                if (strpos($firstLine, ";") !== FALSE && (strpos($firstLine, ",") === FALSE || strpos($firstLine, ";") < strpos($firstLine, ","))) {
+                    $separator = ";";
+                }
+                
+                $headers = str_getcsv($firstLine, $separator);
+                $headers = array_map(function($h) {
+                    return strtolower(trim(str_replace(['"', "'"], '', $h)));
+                }, $headers);
+                
+                $field_map = [
+                    'pertanyaan' => -1,
+                    'ja' => -1,
+                    'jb' => -1,
+                    'jc' => -1,
+                    'jd' => -1,
+                    'answer' => -1
+                ];
+                
+                foreach ($headers as $index => $header) {
+                    if (in_array($header, ['pertanyaan', 'soal', 'question', 'text'])) {
+                        $field_map['pertanyaan'] = $index;
+                    } elseif (in_array($header, ['ja', 'opsi a', 'opsi_a', 'pilihan a', 'pilihan_a', 'a'])) {
+                        $field_map['ja'] = $index;
+                    } elseif (in_array($header, ['jb', 'opsi b', 'opsi_b', 'pilihan b', 'pilihan_b', 'b'])) {
+                        $field_map['jb'] = $index;
+                    } elseif (in_array($header, ['jc', 'opsi c', 'opsi_c', 'pilihan c', 'pilihan_c', 'c'])) {
+                        $field_map['jc'] = $index;
+                    } elseif (in_array($header, ['jd', 'opsi d', 'opsi_d', 'pilihan d', 'pilihan_d', 'd'])) {
+                        $field_map['jd'] = $index;
+                    } elseif (in_array($header, ['answer', 'jawaban', 'jawaban benar', 'jawaban_benar', 'kunci', 'kunci jawaban', 'kunci_jawaban'])) {
+                        $field_map['answer'] = $index;
+                    }
+                }
+                
+                if ($field_map['pertanyaan'] === -1) $field_map['pertanyaan'] = 0;
+                if ($field_map['ja'] === -1) $field_map['ja'] = 1;
+                if ($field_map['jb'] === -1) $field_map['jb'] = 2;
+                if ($field_map['jc'] === -1) $field_map['jc'] = 3;
+                if ($field_map['jd'] === -1) $field_map['jd'] = 4;
+                if ($field_map['answer'] === -1) $field_map['answer'] = 5;
+                
+                while (($row = fgetcsv($handle, 0, $separator)) !== FALSE) {
+                    if (empty($row) || count($row) < 2) continue;
+                    
+                    $pertanyaan = isset($row[$field_map['pertanyaan']]) ? trim($row[$field_map['pertanyaan']]) : '';
+                    if (empty($pertanyaan)) continue;
+                    
+                    $ja = isset($row[$field_map['ja']]) ? trim($row[$field_map['ja']]) : '';
+                    $jb = isset($row[$field_map['jb']]) ? trim($row[$field_map['jb']]) : '';
+                    $jc = isset($row[$field_map['jc']]) ? trim($row[$field_map['jc']]) : '';
+                    $jd = isset($row[$field_map['jd']]) ? trim($row[$field_map['jd']]) : '';
+                    
+                    $ans_raw = isset($row[$field_map['answer']]) ? strtoupper(trim($row[$field_map['answer']])) : '';
+                    $answer = null;
+                    if (in_array($ans_raw, ['A', 'JA'])) $answer = 'ja';
+                    elseif (in_array($ans_raw, ['B', 'JB'])) $answer = 'jb';
+                    elseif (in_array($ans_raw, ['C', 'JC'])) $answer = 'jc';
+                    elseif (in_array($ans_raw, ['D', 'JD'])) $answer = 'jd';
+                    else {
+                        if (!empty($ans_raw)) {
+                            if ($ans_raw === strtoupper($ja)) $answer = 'ja';
+                            elseif ($ans_raw === strtoupper($jb)) $answer = 'jb';
+                            elseif ($ans_raw === strtoupper($jc)) $answer = 'jc';
+                            elseif ($ans_raw === strtoupper($jd)) $answer = 'jd';
+                        }
+                    }
+                    
+                    if (!$answer) $answer = 'ja'; 
+                    $id_bank_soal = uniqid('bs_', true);
+                    
+                    $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) 
+                                      VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                    $this->db->bind('id', $id_bank_soal);
+                    $this->db->bind('pertanyaan', $pertanyaan);
+                    $this->db->bind('ja', $ja);
+                    $this->db->bind('jb', $jb);
+                    $this->db->bind('jc', $jc);
+                    $this->db->bind('jd', $jd);
+                    $this->db->bind('answer', $answer);
+                    $this->db->execute();
+                    
+                    $new_ids[] = $id_bank_soal;
+                }
+                fclose($handle);
+            }
+        } catch (Exception $e) {
+        }
+        return $new_ids;
+    }
+
     public function uploadFile(array $data, $fileLama = null)
     {
         try {
@@ -426,7 +547,6 @@ class Ujian_model
                 exit;
             }
 
-            //cek size 
             if ($size_file > 1000000) {
                 Flasher::setFLash("Ukuran file tidak boleh lebih dari 1 MB", "error");
                 header("Location: " . Constant::DIRNAME . "ujian/tambah");

@@ -122,4 +122,26 @@ class Ujian extends Controller {
             exit;
         }
     }
+
+    public function unduh_template_csv() {
+        if($_SESSION['user']['role'] === "siswa") {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=template_import_soal.csv');
+        
+        $output = fopen('php://output', 'w');
+        
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        fputcsv($output, ['Pertanyaan', 'Opsi A', 'Opsi B', 'Opsi C', 'Opsi D', 'Jawaban Benar (A/B/C/D)']);
+        
+        fputcsv($output, ['Siapakah penemu benua Amerika?', 'Christopher Columbus', 'Albert Einstein', 'Isaac Newton', 'Nikola Tesla', 'A']);
+        fputcsv($output, ['Berapakah hasil dari 5 + 5?', '8', '9', '10', '11', 'C']);
+        
+        fclose($output);
+        exit;
+    }
 }
