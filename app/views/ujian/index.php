@@ -174,7 +174,7 @@
                             $parts = explode(':', $waktu);
                             $totalMenit = (isset($parts[0]) && isset($parts[1])) ? ((int) $parts[0] * 60 + (int) $parts[1]) : 0;
                             ?>
-                            <input type="number" name="waktu_pengerjaan" value="<?= $totalMenit ?>" required>
+                            <input type="number" min="10" name="waktu_pengerjaan" value="<?= $totalMenit ?>" required>
                         </div>
                         <div class="form-input">
                             <label>Penilaian</label>
@@ -406,6 +406,11 @@
 
         document.getElementById('form-ujian').onsubmit = function(e) {
             const soalItems = document.querySelectorAll('.soal-item');
+             if(soalItems.length <= 0) {
+                e.preventDefault();
+                showToast("error", "Tambahkan minimal 1 pertanyaan!");
+                return false;
+            }
             let valid = true;
             
             soalItems.forEach((soal, index) => {
