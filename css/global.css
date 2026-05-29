@@ -9,6 +9,8 @@
   --color-accent-foreground: #055076;
   --color-input: #e1e7ef;
   --color-destructive: #ef4343;
+  --color-success: #22c55e;
+  --color-info: #31c5f6;
   --color-gradient-primary: linear-gradient(135deg, #2977f5 0%, #31c5f6 100%);
   --color-gradient-mesh:
     radial-gradient(at 20% 0%, hsl(217 91% 90% / 0.6) 0px, transparent 50%),
@@ -202,6 +204,12 @@ table {
   font-style: normal;
 }
 
+.line-vertical {
+  width: 1px;
+  height: 30px;
+  background-color: #c9c7c7b6;
+}
+
 .container {
   width: 100%;
   padding: 0 15px;
@@ -316,7 +324,7 @@ aside .box-menu .menu {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 15px;
+  padding: 10px 15px !important;
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -395,7 +403,7 @@ aside .btn-logout:hover {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 25px;
+  gap: 18px;
 }
 
 .wrapper main nav .group-navbar .profil-navbar {
@@ -405,8 +413,8 @@ aside .btn-logout:hover {
 }
 
 .wrapper main nav .profil-navbar .img {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   display: flex;
   border: 2px solid #eaeaea;
   border-radius: 50%;
@@ -1820,6 +1828,7 @@ body.hasil-ujian .btn-detail {
   font-weight: 600;
   font-size: 0.85rem;
   color: #4a5568;
+  font-family: "Poppins", sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2163,11 +2172,11 @@ body.home .btn-menu {
     display: inline-flex;
   
 }
-body.home .menu {
 
+body.home .menu {
     display: flex;
-  
 }
+
 body.home .container.service header {
 
     width: 50%;
@@ -2657,15 +2666,14 @@ body.kerjakanujian .exam-topbar {
   border-bottom: 1px solid #e2e8f0;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   flex-shrink: 0;
-
 }
-body.kerjakanujian .exam-topbar__left {
 
+body.kerjakanujian .exam-topbar__left {
   display: flex;
   flex-direction: column;
   min-width: 0;
-
 }
+
 body.kerjakanujian .exam-mapel {
 
   font-size: 11.5px;
@@ -2687,19 +2695,17 @@ body.kerjakanujian .exam-title {
 
 }
 body.kerjakanujian .exam-topbar__center {
-
   display: flex;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
-
 }
-body.kerjakanujian .exam-soal-info {
 
+body.kerjakanujian .exam-soal-info {
   font-size: 14px;
   color: #334155;
-
 }
+
 body.kerjakanujian .exam-dijawab {
 
   background: #f1f5f9;
@@ -2711,13 +2717,12 @@ body.kerjakanujian .exam-dijawab {
 
 }
 body.kerjakanujian .exam-topbar__right {
-
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-
 }
+
 body.kerjakanujian .exam-timer {
 
   display: flex;
@@ -2871,27 +2876,22 @@ body.kerjakanujian .soal-instruksi {
 
 }
 body.kerjakanujian .soal-teks {
-
-  font-size: 15px;
+  font-size: 22px;
   color: #1e293b;
-  line-height: 1.75;
-
 }
-body.kerjakanujian .soal-gambar {
 
-  border-radius: 12px;
+.soal-gambar {
   overflow: hidden;
-  border: 1px solid #e2e8f0;
-  max-width: 500px;
-
+  max-width: 400px;
 }
-body.kerjakanujian .soal-gambar img {
 
+.soal-gambar img {
   width: 100%;
+  aspect-ratio: 16/9;
   display: block;
   object-fit: contain;
-
 }
+
 body.kerjakanujian .soal-opsi {
 
   display: flex;
@@ -3332,25 +3332,22 @@ body.kerjakanujian .exam-content-wrapper {
 }
 body.kerjakanujian .exam-title {
 
-    max-width: 180px;
+    max-width: 300px;
   
 }
 }
 @media (max-width: 640px) {
 body.kerjakanujian .exam-topbar {
-
     padding: 10px 14px;
     flex-wrap: wrap;
     gap: 8px;
-  
 }
-body.kerjakanujian .exam-topbar__center {
 
-    order: 3;
+body.kerjakanujian .exam-topbar__center {
     width: 100%;
-    justify-content: center;
-  
+    justify-content: flex-start;
 }
+
 body.kerjakanujian .exam-main {
 
     padding: 20px 16px 32px;
@@ -4037,14 +4034,13 @@ body.koreksi .td-skor {
 
 }
 body.koreksi .badge {
-
   display: inline-flex;
   align-items: center;
   padding: 3px 11px;
   border-radius: 999px;
   font-size: 12px;
-
 }
+
 body.koreksi .badge-published {
 
   background: #dcfce7;
@@ -4229,16 +4225,16 @@ body.koreksi-detail .btn-back {
   padding: 9px 20px;
   border-radius: 10px;
   font-size: 13.5px;
-  color: #475569;
-  background: #fff;
+  color: #fff;
+  background-color: var(--color-primary);
   border: 1px solid #e2e8f0;
   cursor: pointer;
   transition: all 0.25s ease;
   text-decoration: none;
 
 }
-body.koreksi-detail .btn-back:hover {
 
+body.koreksi-detail .btn-back:hover {
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
@@ -4246,17 +4242,16 @@ body.koreksi-detail .btn-back:hover {
   box-shadow: 0 4px 14px rgba(41, 119, 245, 0.25);
 
 }
-body.koreksi-detail .btn-back i {
 
+body.koreksi-detail .btn-back i {
   font-size: 16px;
   transition: transform 0.25s;
-
 }
+
 body.koreksi-detail .btn-back:hover i {
-
   transform: translateX(-2px);
-
 }
+
 body.koreksi-detail .detail-topbar__status .badge {
 
   display: inline-flex;
@@ -4268,24 +4263,20 @@ body.koreksi-detail .detail-topbar__status .badge {
 
 }
 body.koreksi-detail .badge--published {
-
-  background: #dcfce7;
-  color: #166534;
-
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--color-success);
 }
+
 body.koreksi-detail .badge--corrected {
-
-  background: #dbeafe;
-  color: #1e40af;
-
+  background: rgba(41, 119, 245, 0.2);
+  color: var(--color-primary);
 }
+
 body.koreksi-detail .badge--pending {
-
-  background: linear-gradient(135deg, #fef9c3, #fef3c7);
+  background-color: rgba(146, 64, 14, 0.2);
   color: #92400e;
-  border: 1px solid #fde68a;
-
 }
+
 body.koreksi-detail .student-card {
 
   background: #fff;
@@ -4528,14 +4519,14 @@ body.koreksi-detail .tab-btn {
 }
 body.koreksi-detail .tab-btn:hover {
 
-  color: #1e293b;
-  background: rgba(255, 255, 255, 0.6);
+  color: #fff;
+  background: var(--color-primary);
 
 }
 body.koreksi-detail .tab-btn--active {
 
-  background: #fff;
-  color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 
 }
@@ -4857,9 +4848,8 @@ body.koreksi-detail .btn-back-bottom {
   padding: 12px 28px;
   border-radius: 12px;
   font-size: 14px;
-  color: #475569;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  color: #fff;
+  background-color: var(--color-primary);
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
@@ -4962,21 +4952,18 @@ body.koreksi-detail .bottom-action-bar {
   
 }
 body.koreksi-detail .bottom-action-bar__right {
-
     display: flex;
-  
 }
-body.koreksi-detail .btn-back-bottom {
 
+body.koreksi-detail .btn-back-bottom {
     justify-content: center;
     width: 100%;
-  
 }
-body.koreksi-detail .score-preview {
 
+body.koreksi-detail .score-preview {
     justify-content: center;
-  
 }
+
 }
 @media (max-width: 640px) {
 body.koreksi-detail .score-summary {
@@ -8197,8 +8184,8 @@ body.ujian .ujian-table td:nth-child(6) div {
   display: flex;
   align-items: center;
   gap: 5px;
-
 }
+
 body.ujian .ujian-table th {
 
   background-color: #f8fafc;
@@ -8238,15 +8225,14 @@ body.ujian .manual {
 
 }
 body.ujian .active {
-
   padding: 3px 8px;
   border-radius: 14px;
   background: #dcfce7;
   color: #166534;
   font-size: 0.7rem;
   font-weight: 500;
-
 }
+
 body.ujian .inactive {
 
   padding: 3px 8px;
@@ -8388,26 +8374,28 @@ body.ujian-siswa .card-icon {
 
 }
 body.ujian-siswa .card-icon--muted {
-
   background: #f1f5f9;
   color: #94a3b8;
-
 }
-body.ujian-siswa .card-icon--draft {
 
+body.ujian-siswa .card-icon--draft {
   background: #e0f2fe;
   color: #0284c7;
-
 }
-body.ujian-siswa .badge {
 
+body.ujian-siswa .card-icon--primary {
+  background: var(--color-gradient-primary);
+  color: #fff;
+}
+
+body.ujian-siswa .badge {
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.78rem;
   font-weight: 600;
   font-family: "Poppins", sans-serif;
-
 }
+
 body.ujian-siswa .badge-aktif {
 
   background-color: #dcfce7;
@@ -8416,12 +8404,17 @@ body.ujian-siswa .badge-aktif {
 
 }
 body.ujian-siswa .badge-berakhir {
-
   background-color: #f1f5f9;
   color: #64748b;
   border: 1px solid #cbd5e1;
-
 }
+
+body.ujian-siswa .badge-selesai {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: var(--color-success);
+  border: 1px solid rgba(34, 197, 94, 0.8);
+}
+
 body.ujian-siswa .badge-draft {
 
   background-color: #e0f2fe;

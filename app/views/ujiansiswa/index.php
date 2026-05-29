@@ -57,10 +57,10 @@ $now       = time();
                 }
 
                 $badgeMap = [
-                    'selesai'     => ['class' => 'badge-berakhir', 'label' => 'Selesai',     'icon' => 'card-icon--muted'],
-                    'belum_mulai' => ['class' => 'badge-draft',    'label' => 'Belum Mulai', 'icon' => 'card-icon--draft'],
-                    'berakhir'    => ['class' => 'badge-berakhir', 'label' => 'Berakhir',    'icon' => 'card-icon--muted'],
-                    'aktif'       => ['class' => 'badge-aktif',    'label' => 'Aktif',       'icon' => '']
+                    'selesai'     => ['class' => 'badge-selesai', 'label' => 'Selesai',     'icon' => 'card-icon--primary'],
+                    'belum_mulai' => ['class' => 'badge-draft',    'label' => 'Belum Mulai', 'icon' => 'card-icon--primary'],
+                    'berakhir'    => ['class' => 'badge-berakhir', 'label' => 'Berakhir',    'icon' => 'card-icon--primary'],
+                    'aktif'       => ['class' => 'badge-aktif',    'label' => 'Aktif',       'icon' => 'card-icon--primary']
                 ];
                 $style = $badgeMap[$status];
             ?>

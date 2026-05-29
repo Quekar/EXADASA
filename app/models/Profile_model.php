@@ -32,7 +32,7 @@ class Profile_model
     public function getStudentStats(string $nisn)
     {
         try {
-            $this->db->query("SELECT COUNT(*) as total_ujian, AVG(nilai) as rata_rata FROM nilai_siswa WHERE nisn = :nisn");
+            $this->db->query("SELECT COUNT(*) as total_ujian, AVG(CASE WHEN ns.publik = 1 THEN ns.nilai END) as rata_rata FROM nilai_siswa as ns WHERE nisn = :nisn");
             $this->db->bind('nisn', $nisn);
             return $this->db->single();
         } catch (PDOException $e) {

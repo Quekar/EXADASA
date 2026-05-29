@@ -8,7 +8,8 @@
         class="profile-content">
         <div class="profile-avatar">
             <div class="avatar-border">
-                <div class="avatar-circle" style="text-transform: uppercase; <?= (isset($data['user']['foto']) && $data['user']['foto']) ? "" : "background: var(--color-gradient-primary);" ?>">
+                <div class="avatar-circle"
+                    style="text-transform: uppercase; <?= (isset($data['user']['foto']) && $data['user']['foto']) ? "" : "background: var(--color-gradient-primary);" ?>">
                     <?php if (isset($data['user']['foto']) && $data['user']['foto']): ?>
                         <img src="<?= Constant::DIRNAME ?>asset/img/<?= $data['user']['foto'] ?>" alt="profile"
                             style="object-fit: contain; width: 100%; aspect-ratio: 1 / 1;">
@@ -113,23 +114,26 @@
 </div>
 
 <script>
-    document.getElementById('input-foto').addEventListener('change', function () {
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const img = document.querySelector('.avatar-circle');
-                if (img.tagName === 'IMG') {
-                    img.src = e.target.result;
-                } else {
-                    const newImg = document.createElement('img');
-                    newImg.src = e.target.result;
-                    newImg.className = 'avatar-circle';
-                    newImg.style.objectFit = 'contain';
-                    img.parentNode.replaceChild(newImg, img);
+    const inputFoto = document.getElementById('input-foto');
+    if (inputFoto) {
+        inputFoto.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.querySelector('.avatar-circle');
+                    if (img.tagName === 'IMG') {
+                        img.src = e.target.result;
+                    } else {
+                        const newImg = document.createElement('img');
+                        newImg.src = e.target.result;
+                        newImg.className = 'avatar-circle';
+                        newImg.style.objectFit = 'contain';
+                        img.parentNode.replaceChild(newImg, img);
+                    }
                 }
-            }
-            reader.readAsDataURL(this.files[0]);
+                reader.readAsDataURL(this.files[0]);
 
-        }
-    });
+            }
+        });
+    }
 </script>

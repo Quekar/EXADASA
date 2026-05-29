@@ -4,29 +4,28 @@ class Notification extends Controller
 {
     public function getNotifications()
     {
-        header('Content-Type: application/json');
 
         if (!isset($_SESSION['user'])) {
             echo json_encode(['success' => false, 'message' => 'Unauthorized']);
             exit;
         }
 
-        $id_user = (int) ($_SESSION['user']['id'] ?? 0);
+        $id_user = $_SESSION['user']['username'] ?? null;
 
-        if ($id_user === 0) {
-            echo json_encode(['success' => false, 'message' => 'id_user tidak ditemukan di session']);
+        if (!$id_user) {
+            echo json_encode(['success' => false, 'message' => 'ID user tidak valid!']);
             exit;
         }
 
-        $model  = $this->model('Notification_model');
-        $notifs = $model->getByUser($id_user);
-        $unread = $model->countUnread($id_user);
+        $notification = $this->model('Notification_model')->getByUser($id_user);
+        $unread = $this->model('Notification_model')->countUnread($id_user);
 
         echo json_encode([
             'success' => true,
             'unread'  => $unread,
-            'notifs'  => $notifs,
+            'notifs'  => $notification,
         ]);
+
         exit;
     }
 
@@ -39,8 +38,8 @@ class Notification extends Controller
             exit;
         }
 
-        $id_user = (int) ($_SESSION['user']['id'] ?? 0);
-        if ($id_user > 0) {
+        $id_user = ($_SESSION['user']['username'] ?? null);
+        if ($id_user) {
             $this->model('Notification_model')->markAllRead($id_user);
         }
 
@@ -77,10 +76,8 @@ class Notification extends Controller
             exit;
         }
 
-        $id_user = (int) ($_SESSION['user']['id'] ?? 0);
-        $count   = $id_user > 0
-            ? $this->model('Notification_model')->countUnread($id_user)
-            : 0;
+        $id_user = $_SESSION['user']['username'] ?? null;
+        $count   = $id_user ? $this->model('Notification_model')->countUnread($id_user) : 0;
 
         echo json_encode(['count' => $count]);
         exit;

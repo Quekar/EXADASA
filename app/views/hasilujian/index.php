@@ -41,7 +41,7 @@
             <?php foreach ($data['riwayat'] as $r) : ?>
                 <?php if ($r['publik'] == 1) : ?>
                     <div class="hasil-ujian-card">
-                        <div class="skor-ujian" style="background: conic-gradient(#337ceb <?= round($r['nilai']); ?>%, #f0f4f8 0);">
+                        <div class="skor-ujian" style="background: conic-gradient(var(--color-primary) <?= round($r['nilai']); ?>%, #f0f4f8 0);">
                             <div class="skor-border">
                                 <strong><?= round($r['nilai']); ?></strong>
                                 <strong>SKOR</strong>

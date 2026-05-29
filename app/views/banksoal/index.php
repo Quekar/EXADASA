@@ -86,9 +86,17 @@
             <h2 id="modalSoalTitle">Tambah Soal Baru</h2>
             <button class="btn-close" onclick="closeModal('modalSoal')">&times;</button>
         </div>
-        <form action="<?= Constant::DIRNAME ?>banksoal/simpan" method="POST">
+        <form action="<?= Constant::DIRNAME ?>banksoal/simpan" method="POST" enctype="multipart/form-data">
             <div class="modal-body">
                 <input type="hidden" name="id_bank_soal" id="form_id_bank_soal">
+                <div class="form-input" style="margin-bottom: 15px;">
+                    <label><i class="ph ph-image"></i> Gambar (Opsional)</label>
+                    <div class="soal-gambar" id="plate-gambar" style="display: none;">
+                        <img src="" id="gambar_old" alt="Gambar soal">
+                    </div>
+                    <input type="hidden" name="form_gambar_old" id="form_gambar_old" />
+                    <input onchange="previewGambar()" type="file" name="form_gambar" id="form_gambar" accept="image/*">
+                </div>
                 <div class="form-group">
                     <label>Pertanyaan</label>
                     <textarea name="pertanyaan" id="form_pertanyaan" class="form-control" rows="3" required></textarea>
@@ -200,8 +208,20 @@
         if (id === 'modalSoal') {
             document.getElementById('modalSoalTitle').innerText = 'Tambah Soal Baru';
             document.getElementById('form_id_bank_soal').value = '';
+            document.getElementById('plate-gambar').style.display = 'none';
             document.querySelector('#modalSoal form').reset();
         }
+    }
+
+    function previewGambar() {
+        const file = document.getElementById('form_gambar').files[0];
+        document.getElementById('plate-gambar').style.display = 'block';
+        const preview = document.getElementById('gambar_old');
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            preview.src = reader.result;
+        }
+        reader.readAsDataURL(file);
     }
 
     function closeModal(id) {
@@ -212,6 +232,9 @@
         openModal('modalSoal');
         document.getElementById('modalSoalTitle').innerText = 'Edit Soal';
         document.getElementById('form_id_bank_soal').value = soal.id_bank_soal;
+        document.getElementById('form_gambar_old').value = soal.gambar;
+        if(soal.gambar) document.getElementById('plate-gambar').style.display = 'block';
+        document.getElementById('gambar_old').src = "<?= Constant::DIRNAME ?>asset/img/" + soal.gambar;
         document.getElementById('form_pertanyaan').value = soal.pertanyaan;
         document.getElementById('form_id_kategori').value = soal.id_kategori;
         document.getElementById('form_ja').value = soal.ja;

@@ -4,15 +4,12 @@ class Jurusan extends Controller
 {
     public function index()
     {
-        if ($_SESSION['user']['role'] !== "admin") {
-            header('location: ' . Constant::DIRNAME . 'dashboard');
-            exit;
-        }
 
-        $data["title"] = "Jurusan";
-        $data["css"] = "style.jurusan";
         $data["jurusan"] = $this->model('Jurusan_model')->getAllJurusan();
         $data["stats"] = $this->model('Jurusan_model')->getJurusanStats();
+        
+        $data["title"] = "Jurusan";
+        $data["css"] = "style.jurusan";
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);

@@ -9,60 +9,59 @@ class Notification_model
         $this->db = new Database;
     }
 
-    public function getByUser(int $id_user): array
+    public function getByUser(string $id_user): array
     {
         try {
-            $safe_id = intval($id_user);
             $this->db->query(
                 "SELECT * FROM notifications
-                 WHERE id_user = $safe_id
+                 WHERE id_user = :id_user
                  ORDER BY created_at DESC
                  LIMIT 20"
             );
-            return $this->db->resultSet() ?: [];
+            $this->db->bind('id_user', $id_user);
+            return $this->db->resultSet();
         } catch (PDOException $e) {
             return [];
         }
     }
 
-    public function countUnread(int $id_user): int
+    public function countUnread(string $id_user): int
     {
         try {
-            $safe_id = intval($id_user);
             $this->db->query(
                 "SELECT COUNT(*) as total FROM notifications
-                 WHERE id_user = $safe_id AND is_read = 0"
+                 WHERE id_user = :id_user AND is_read = 0"
             );
-            return (int) ($this->db->single()['total'] ?? 0);
+            $this->db->bind("id_user", $id_user);
+            return $this->db->single()['total'] ?? 0;
         } catch (PDOException $e) {
             return 0;
         }
     }
 
-    public function markAllRead(int $id_user): void
+    public function markAllRead(string $id_user): void
     {
         try {
-            $safe_id = intval($id_user);
             $this->db->query(
                 "UPDATE notifications
                  SET is_read = 1, read_at = NOW()
-                 WHERE id_user = $safe_id AND is_read = 0"
+                 WHERE id_user = :id_user AND is_read = 0"
             );
+            $this->db->bind('id_user', $id_user);
             $this->db->execute();
         } catch (PDOException $e) {
-
         }
     }
 
     public function markOneRead(int $id_notifikasi): void
     {
         try {
-            $safe_id = intval($id_notifikasi);
             $this->db->query(
                 "UPDATE notifications
                  SET is_read = 1, read_at = NOW()
-                 WHERE id_notifikasi = $safe_id"
+                 WHERE id_notifikasi = :id_notifikasi"
             );
+            $this->db->bind('id_notifikasi', $id_notifikasi);
             $this->db->execute();
         } catch (PDOException $e) {
             

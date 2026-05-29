@@ -4,24 +4,15 @@ class UjianSiswa extends Controller
 {
     public function index()
     {
-        if ($_SESSION['user']['role'] !== 'siswa') {
-            header('location: ' . Constant::DIRNAME . 'dashboard');
-            exit;
-        }
 
-        $nisn = $_SESSION['user']['username'];
-        $ujianModel = $this->model('UjianSiswa_model');
-        
-        $dataSiswa = $ujianModel->getDataSiswa($nisn);
+        $dataSiswa = $this->model('UjianSiswa_model')->getDataSiswa($_SESSION['user']['username']);
         $id_kelas  = $dataSiswa['id_kelas'] ?? null;
         
-        $listUjian = $ujianModel->getUjianUntukSiswa($id_kelas);
-        $statusMap = $ujianModel->getStatusPengerjaanSiswa($nisn);
-
+        $data['listUjian'] = $this->model('UjianSiswa_model')->getUjianUntukSiswa($id_kelas);
+        $data['statusMap'] = $this->model('UjianSiswa_model')->getStatusPengerjaanSiswa($_SESSION['user']['username']);
+        
         $data['title']     = 'Ujian Siswa';
         $data['css']       = 'style.ujian.siswa';
-        $data['listUjian'] = $listUjian;
-        $data['statusMap'] = $statusMap;
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);
@@ -48,8 +39,7 @@ class UjianSiswa extends Controller
             exit;
         }
 
-        $model = $this->model('UjianSiswa_model');
-        $ujian = $model->getUjianById($id_ujian);
+        $ujian = $this->model('UjianSiswa_model')->getUjianById($id_ujian);
 
         if (!$ujian) {
             echo json_encode(['success' => false, 'message' => 'Ujian tidak ditemukan.']);
@@ -69,6 +59,7 @@ class UjianSiswa extends Controller
             echo json_encode(['success' => false, 'message' => 'Ujian belum dimulai.']);
             exit;
         }
+
         if ($now > $selesai) {
             echo json_encode(['success' => false, 'message' => 'Ujian sudah berakhir.']);
             exit;
@@ -90,6 +81,7 @@ class UjianSiswa extends Controller
             'success'  => true,
             'redirect' => Constant::DIRNAME . 'kerjakanUjian/' . $id_ujian,
         ]);
+        
         exit;
     }
 }

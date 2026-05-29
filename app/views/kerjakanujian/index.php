@@ -34,9 +34,6 @@ $DIRNAME = Constant::DIRNAME;
             <button class="exam-btn-fullscreen" id="btnFullscreen" title="Fullscreen">
                 <i class="ph ph-arrows-out"></i>
             </button>
-            <button class="exam-btn-submit poppins-semibold" id="btnSubmit">
-                <i class="ph ph-paper-plane-tilt"></i> Submit
-            </button>
         </div>
     </header>
 
@@ -65,16 +62,16 @@ $DIRNAME = Constant::DIRNAME;
                             <span class="soal-instruksi poppins-regular">Pilih satu jawaban yang paling tepat.</span>
                         </div>
 
-                        <p class="soal-teks poppins-regular">
-                            Soal <?= $no ?>. <?= htmlspecialchars($soal['pertanyaan']) ?>
-                        </p>
-
                         <?php if (!empty($soal['gambar'])): ?>
                             <div class="soal-gambar">
-                                <img src="<?= $DIRNAME ?>asset/img/soal/<?= htmlspecialchars($soal['gambar']) ?>"
+                                <img src="<?= $DIRNAME ?>asset/img/<?= $soal['gambar'] ?>"
                                     alt="Gambar soal <?= $no ?>">
                             </div>
                         <?php endif; ?>
+
+                        <p class="soal-teks poppins-regular">
+                            <?= htmlspecialchars($soal['pertanyaan']) ?>
+                        </p>
 
                         <div class="soal-opsi">
                             <?php foreach ($opsi as $key => $teksOpsi):
@@ -333,7 +330,6 @@ $DIRNAME = Constant::DIRNAME;
             });
     }
 
-    document.getElementById('btnSubmit').addEventListener('click', bukaModalSubmit);
     document.getElementById('btnConfirmSubmit').addEventListener('click', () => submitUjian(false));
     document.getElementById('modalSubmit').addEventListener('click', function (e) {
         if (e.target === this) tutupModal();

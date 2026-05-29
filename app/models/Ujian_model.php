@@ -153,7 +153,7 @@ class Ujian_model
         }
     }
 
-    public function tambahUjian($data)
+    public function tambahUjian($data, $file)
     {
         try {
             $this->db->beginTransaction();
@@ -195,11 +195,32 @@ class Ujian_model
                     $id_bank_soal = uniqid('bs_', true);
                     $answer_map = ['A' => 'ja', 'B' => 'jb', 'C' => 'jc', 'D' => 'jd'];
                     $answer = $answer_map[$data['jawaban_benar'][$index]] ?? null;
+                    $soal_gambar = null;
+
+                    if ($file['soal_gambar']['error'][$index] == 0) {
+                        $filterdata = [
+                            'name' => $file['soal_gambar']['name'][$index],
+                            'full_path' => $file['soal_gambar']['full_path'][$index],
+                            'type' => $file['soal_gambar']['type'][$index],
+                            'tmp_name' => $file['soal_gambar']['tmp_name'][$index],
+                            'error' => $file['soal_gambar']['error'][$index],
+                            'size' => $file['soal_gambar']['size'][$index],
+                        ];
+
+                        $soal_gambar = $this->uploadFile($filterdata);
+                    }
 
                     if ($answer) {
-                        $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) 
-                                          VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                        if ($soal_gambar) {
+                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, gambar, pertanyaan, ja, jb, jc, jd, answer) 
+                                            VALUES (:id, :gambar, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                        } else {
+                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) 
+                                            VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                        }
                         $this->db->bind('id', $id_bank_soal);
+                        if ($soal_gambar)
+                            $this->db->bind('gambar', $soal_gambar);
                         $this->db->bind('pertanyaan', $text);
                         $this->db->bind('ja', $data['opsi_a'][$index]);
                         $this->db->bind('jb', $data['opsi_b'][$index]);
@@ -208,9 +229,16 @@ class Ujian_model
                         $this->db->bind('answer', $answer);
                         $this->db->execute();
                     } else {
-                        $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd) 
-                                          VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd)");
+                        if ($soal_gambar) {
+                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, gambar, pertanyaan, ja, jb, jc, jd) 
+                                            VALUES (:id, :gambar, :pertanyaan, :ja, :jb, :jc, :jd)");
+                        } else {
+                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd) 
+                                            VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd)");
+                        }
                         $this->db->bind('id', $id_bank_soal);
+                        if ($soal_gambar)
+                            $this->db->bind('gambar', $soal_gambar);
                         $this->db->bind('pertanyaan', $text);
                         $this->db->bind('ja', $data['opsi_a'][$index]);
                         $this->db->bind('jb', $data['opsi_b'][$index]);
@@ -232,13 +260,13 @@ class Ujian_model
 
             $this->db->commit();
             return true;
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->db->rollBack();
             return false;
         }
     }
 
-    public function updateUjian($data)
+    public function updateUjian($data, $file)
     {
         try {
             $this->db->beginTransaction();
@@ -282,30 +310,62 @@ class Ujian_model
                     $id_bank_soal = $data['id_bank_soal_manual'][$index] ?? '';
                     $answer_map = ['A' => 'ja', 'B' => 'jb', 'C' => 'jc', 'D' => 'jd'];
                     $answer = $answer_map[$data['jawaban_benar'][$index]] ?? null;
+                    $soal_gambar = $data['soal_gambar_old'][$index];
+                 
+                    if ($file['soal_gambar']['error'][$index] == 0) {
+                        $filterdata = [
+                            'name' => $file['soal_gambar']['name'][$index],
+                            'full_path' => $file['soal_gambar']['full_path'][$index],
+                            'type' => $file['soal_gambar']['type'][$index],
+                            'tmp_name' => $file['soal_gambar']['tmp_name'][$index],
+                            'error' => $file['soal_gambar']['error'][$index],
+                            'size' => $file['soal_gambar']['size'][$index],
+                        ];
+                        $soal_gambar = $this->uploadFile($filterdata);
+                    }
 
                     if ($answer) {
-                        if (!empty($id_bank_soal)) {
-                            $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd, answer = :answer WHERE id_bank_soal = :id");
+                        if ($soal_gambar) {
+                            if (!empty($id_bank_soal)) {
+                                $this->db->query("UPDATE bank_soal SET gambar = :gambar, pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd, answer = :answer WHERE id_bank_soal = :id");
+                            } else {
+                                $id_bank_soal = uniqid('bs_', true);
+                                $this->db->query("INSERT INTO bank_soal (id_bank_soal, gambar, pertanyaan, ja, jb, jc, jd, answer) VALUES (:id, :gambar, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                            }
                         } else {
-                            $id_bank_soal = uniqid('bs_', true);
-                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                            if (!empty($id_bank_soal)) {
+                                $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd, answer = :answer WHERE id_bank_soal = :id");
+                            } else {
+                                $id_bank_soal = uniqid('bs_', true);
+                                $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd, answer) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd, :answer)");
+                            }
                         }
                     } else {
-                        if (!empty($id_bank_soal)) {
-                            $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd WHERE id_bank_soal = :id");
+                        if ($soal_gambar) {
+                            if (!empty($id_bank_soal)) {
+                                $this->db->query("UPDATE bank_soal SET gambar = :gambar, pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd WHERE id_bank_soal = :id");
+                            } else {
+                                $id_bank_soal = uniqid('bs_', true);
+                                $this->db->query("INSERT INTO bank_soal (id_bank_soal, gambar, pertanyaan, ja, jb, jc, jd) VALUES (:id, :gambar, :pertanyaan, :ja, :jb, :jc, :jd)");
+                            }
                         } else {
-                            $id_bank_soal = uniqid('bs_', true);
-                            $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd)");
+                            if (!empty($id_bank_soal)) {
+                                $this->db->query("UPDATE bank_soal SET pertanyaan = :pertanyaan, ja = :ja, jb = :jb, jc = :jc, jd = :jd WHERE id_bank_soal = :id");
+                            } else {
+                                $id_bank_soal = uniqid('bs_', true);
+                                $this->db->query("INSERT INTO bank_soal (id_bank_soal, pertanyaan, ja, jb, jc, jd) VALUES (:id, :pertanyaan, :ja, :jb, :jc, :jd)");
+                            }
                         }
                     }
 
                     $this->db->bind('id', $id_bank_soal);
+                    if($soal_gambar) $this->db->bind('gambar', $soal_gambar);
                     $this->db->bind('pertanyaan', $text);
                     $this->db->bind('ja', $data['opsi_a'][$index]);
                     $this->db->bind('jb', $data['opsi_b'][$index]);
                     $this->db->bind('jc', $data['opsi_c'][$index]);
                     $this->db->bind('jd', $data['opsi_d'][$index]);
-                    if($answer) $this->db->bind('answer', $answer);
+                    if ($answer) $this->db->bind('answer', $answer);
                     $this->db->execute();
 
                     $unique_soal_ids[$id_bank_soal] = true;
@@ -347,6 +407,43 @@ class Ujian_model
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
+            return false;
+        }
+    }
+
+    public function uploadFile(array $data, $fileLama = null)
+    {
+        try {
+            $path_file = $data["full_path"];
+            $size_file = $data["size"];
+            $temp_file = $data["tmp_name"];
+
+            $extensi_valid = ["png", "jpg", "jpeg", "webp", "PNG", "JPG", "WEBP"];
+            $extensi = pathinfo($path_file, PATHINFO_EXTENSION);
+            if (in_array($extensi, $extensi_valid) == false) {
+                Flasher::setFLash("Extension tidak valid", "error");
+                header("Location: " . Constant::DIRNAME . "ujian/tambah");
+                exit;
+            }
+
+            //cek size 
+            if ($size_file > 1000000) {
+                Flasher::setFLash("Ukuran file tidak boleh lebih dari 1 MB", "error");
+                header("Location: " . Constant::DIRNAME . "ujian/tambah");
+                exit;
+            }
+
+            if ($fileLama) {
+                $path_file = "asset/img/" . $fileLama;
+                if (file_exists($path_file))
+                    unlink($path_file);
+            }
+
+            $nama_file_baru = uniqid() . "." . $extensi;
+            move_uploaded_file($temp_file, "asset/img/" . $nama_file_baru);
+
+            return $nama_file_baru;
+        } catch (PDOException $e) {
             return false;
         }
     }

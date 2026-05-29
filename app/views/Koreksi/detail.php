@@ -12,10 +12,6 @@ $persentase = $data['persentase'];
 <div class="page-content container">
 
     <div class="detail-topbar">
-        <a href="<?= Constant::DIRNAME ?>koreksi" class="btn-back poppins-medium">
-            <i class="ph ph-arrow-left"></i>
-            Kembali
-        </a>
         <div class="detail-topbar__status">
             <?php if ($student['status'] === 'published'): ?>
                 <span class="badge badge--published poppins-medium"><i class="ph ph-check-circle"></i> Published</span>
@@ -123,6 +119,12 @@ $persentase = $data['persentase'];
                 </div>
 
                 <div class="question-card__body">
+                    <?php if (isset($q['gambar'])): ?>
+                        <div class="soal-gambar" style="margin-bottom: 5px;">
+                            <img src="<?= Constant::DIRNAME ?>asset/img/<?= $q['gambar'] ?>" alt="Gambar soal <?= $q['no'] ?>">
+                        </div>
+                    <?php endif; ?>
+
                     <div class="question-card__soal">
                         <p class="poppins-regular"><?= $q['soal'] ?></p>
                     </div>
@@ -177,12 +179,16 @@ $persentase = $data['persentase'];
                             <div class="koreksi-actions__buttons">
                                 <button type="button"
                                     class="koreksi-btn koreksi-btn--benar <?= $q['status'] === 'benar' ? 'koreksi-btn--active' : '' ?> poppins-semibold"
-                                    data-no="<?= $q['no'] ?>" data-value="benar" data-id-bank-soal="<?= $q['id_bank_soal'] ?>" data-id-ujian-siswa="<?= $q['id_ujian_siswa'] ?>" data-dirname="<?= Constant::DIRNAME ?>" data-skor="<?= $q['skor_max'] ?>">
+                                    data-no="<?= $q['no'] ?>" data-value="benar" data-id-bank-soal="<?= $q['id_bank_soal'] ?>"
+                                    data-id-ujian-siswa="<?= $q['id_ujian_siswa'] ?>" data-dirname="<?= Constant::DIRNAME ?>"
+                                    data-skor="<?= $q['skor_max'] ?>">
                                     <i class="ph ph-check-circle"></i> Benar
                                 </button>
                                 <button type="button"
                                     class="koreksi-btn koreksi-btn--salah <?= $q['status'] === 'salah' ? 'koreksi-btn--active' : '' ?> poppins-semibold"
-                                    data-no="<?= $q['no'] ?>" data-value="salah" data-id-bank-soal="<?= $q['id_bank_soal'] ?>" data-id-ujian-siswa="<?= $q['id_ujian_siswa'] ?>" data-dirname="<?= Constant::DIRNAME ?>" data-skor="<?= $q['skor_max'] ?>">
+                                    data-no="<?= $q['no'] ?>" data-value="salah" data-id-bank-soal="<?= $q['id_bank_soal'] ?>"
+                                    data-id-ujian-siswa="<?= $q['id_ujian_siswa'] ?>" data-dirname="<?= Constant::DIRNAME ?>"
+                                    data-skor="<?= $q['skor_max'] ?>">
                                     <i class="ph ph-x-circle"></i> Salah
                                 </button>
                             </div>
@@ -272,7 +278,8 @@ $persentase = $data['persentase'];
             </div>
         </div>
         <div class="bottom-action-bar__right">
-            <a href="<?= Constant::DIRNAME ?>koreksi" class="btn-back-bottom poppins-semibold">
+            <a href="<?= Constant::DIRNAME . (($_SESSION["user"]["role"] === "siswa") ? "hasilujian" : "koreksi") ?>"
+                class="btn-back-bottom poppins-semibold">
                 <i class="ph ph-arrow-left"></i>
                 Kembali ke Daftar
             </a>

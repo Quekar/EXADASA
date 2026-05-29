@@ -2,14 +2,11 @@
 
 class Pengaturan extends Controller {
     public function index() {
-        if ($_SESSION['user']['role'] !== "admin") {
-            header('location: ' . Constant::DIRNAME . 'dashboard');
-            exit;
-        }
+
+        $data["konfigurasi"] = $this->model('Pengaturan_model')->getKonfigurasi();
 
         $data["title"] = "Pengaturan";
         $data["css"] = "style.pengaturan";
-        $data["konfigurasi"] = $this->model('Pengaturan_model')->getKonfigurasi();
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);
@@ -19,6 +16,11 @@ class Pengaturan extends Controller {
     }
 
     public function ubah() {
+        if($_SESSION['user']['role'] !== "admin") {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+        
         if($this->model("Pengaturan_model")->ubahKonfigurasi($_POST, $_FILES) > 0) {
             Flasher::setFlash("Konfigurasi sistem berhasil diubah", "success");
         } else {

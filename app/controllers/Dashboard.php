@@ -69,10 +69,30 @@ class Dashboard extends Controller
             $pengguna = $_SESSION['user']['username'] ?? 'Unknown';
             $this->model('Dashboard_model')->insertLog($pengguna, 'Logout dari sistem');
         }
+
+        session_destroy();
+        unset($_SESSION['user']);
+        setcookie("token", "", time() - 7 * 24 * 60 * 60, "/");
+        setcookie("key", "", time() - 7 * 24 * 60 * 60, "/");
+        unset($_COOKIE["token"]);
+        unset($_COOKIE["key"]);
+        header('location: ' . Constant::DIRNAME . 'login');
+        exit;
+    }
+
+    public function logoutSession()
+    {
+        if (isset($_SESSION['user'])) {
+            $pengguna = $_SESSION['user']['username'] ?? 'Unknown';
+            $this->model('Dashboard_model')->insertLog($pengguna, 'Logout dari sistem');
+        }
         
         session_destroy();
         unset($_SESSION['user']);
-        header('location: ' . Constant::DIRNAME . 'login');
-        exit;
+        setcookie("token", "", time() - 7 * 24 * 60 * 60, "/");
+        setcookie("key", "", time() - 7 * 24 * 60 * 60, "/");
+        unset($_COOKIE["token"]);
+        unset($_COOKIE["key"]);
+        echo "Session berhasil dihapus";
     }
 }

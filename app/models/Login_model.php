@@ -25,13 +25,20 @@ class Login_model
 
             $userRole = $this->getUserByRole($user["username"], $user["role"]);
 
-            $_SESSION["user"] = [
+            $sesiUser = [
                 "id" => $user["id_user"],
                 "foto" => $userRole["foto"] ?? null,
                 "username" => $user["username"],
                 "nama_lengkap" => $userRole["nama_lengkap"],
                 "role" => $user["role"]
             ];
+
+            $_SESSION["user"] = $sesiUser;
+
+            if($remember) {
+                setcookie("token", password_hash($user["id_user"], PASSWORD_DEFAULT), time() + 7 * 24 * 60 * 60, "/");
+                setcookie("key", json_encode($sesiUser), time() + 7 * 24 * 60 * 60, "/");
+            }
             return true;
         } catch (PDOException $e) {
             echo $e->getMessage();

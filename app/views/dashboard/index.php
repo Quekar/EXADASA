@@ -160,7 +160,7 @@
             <div class="dashboard-upcoming-exam">
                 <div class="upcoming-exam-header">
                     <h2>Ujian Hari Ini</h2>
-                    <a href="<?= Constant::DIRNAME. $_SESSION['user']['role'] == 'siswa' ? 'ujiansiswa' : 'ujian' ?>" class="btn-lihat-semua">Lihat Semua</a>
+                    <a href="<?= Constant::DIRNAME. ($_SESSION['user']['role'] == 'siswa') ? 'ujiansiswa' : 'ujian' ?>" class="btn-lihat-semua">Lihat Semua</a>
                 </div>
 
                 <div class="upcoming-exam-list">

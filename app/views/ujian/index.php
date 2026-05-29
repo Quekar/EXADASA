@@ -1,11 +1,12 @@
-<?php if ($data['halaman'] == 'index') : ?>
+<?php if ($data['halaman'] == 'index'): ?>
     <div class="container ujian">
         <div class="ujian-header">
             <div class="ujian-title">
                 <h1 class="poppins-semibold">Manajemen Ujian</h1>
                 <p class="poppins-regular">Buat dan kelola ujian untuk kelas anda.</p>
             </div>
-            <a href="<?= Constant::DIRNAME; ?>ujian/tambah" class="btn-primary" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <a href="<?= Constant::DIRNAME; ?>ujian/tambah" class="btn-primary"
+                style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
                 <i class="ph ph-plus"></i>
                 Buat Ujian
             </a>
@@ -39,17 +40,27 @@
                                 </td>
                                 <td>
                                     <div><?= $u['tingkat'] ?> - <?= $u['nama_jurusan'] ?></div>
-                                    <?php if($u['jml_kelas'] > 1): ?>
-                                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 500;">+ <?= $u['jml_kelas'] - 1 ?> kelas lainnya</div>
+                                    <?php if ($u['jml_kelas'] > 1): ?>
+                                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 500;">+ <?= $u['jml_kelas'] - 1 ?>
+                                            kelas lainnya</div>
                                     <?php endif; ?>
                                 </td>
-                                <td><div><?= $u['jadwal_mulai'] ?></div></td>
+                                <td>
+                                    <div><?= $u['jadwal_mulai'] ?></div>
+                                </td>
                                 <td><span class="<?= strtolower($u['penilaian']) ?>"><?= $u['penilaian'] ?></span></td>
-                                <td><span class="<?= $u['status'] == 'aktif' ? 'active' : 'inactive' ?>"><?= $u['status'] ?></span></td>
+                                <td><span class="<?= $u['status'] == 'aktif' ? 'active' : 'inactive' ?>"><?= $u['status'] ?></span>
+                                </td>
                                 <td>
                                     <div style="display: flex; gap: 5px;">
-                                        <a href="<?= Constant::DIRNAME ?>ujian/edit/<?= $u['id_ujian'] ?>" class="btn-edit" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #f0f7ff; color: #3b82f6; border: none; cursor: pointer; text-decoration: none;"><i class="ph ph-pencil"></i></a>
-                                        <button onclick="if(confirm('Hapus ujian ini?')) window.location.href='<?= Constant::DIRNAME ?>ujian/hapus/<?= $u['id_ujian'] ?>'" class="btn-danger" style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #fff1f2; color: #ef4444; border: none; cursor: pointer;"><i class="ph ph-trash"></i></button>
+                                        <a href="<?= Constant::DIRNAME ?>ujian/edit/<?= $u['id_ujian'] ?>" class="btn-edit"
+                                            style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #f0f7ff; color: #3b82f6; border: none; cursor: pointer; text-decoration: none;"><i
+                                                class="ph ph-pencil"></i></a>
+                                        <button
+                                            onclick="if(confirm('Hapus ujian ini?')) window.location.href='<?= Constant::DIRNAME ?>ujian/hapus/<?= $u['id_ujian'] ?>'"
+                                            class="btn-danger"
+                                            style="display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 8px; background: #fff1f2; color: #ef4444; border: none; cursor: pointer;"><i
+                                                class="ph ph-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -60,7 +71,7 @@
         </div>
     </div>
 
-<?php elseif ($data['halaman'] == 'tambah' || $data['halaman'] == 'edit') : ?>
+<?php elseif ($data['halaman'] == 'tambah' || $data['halaman'] == 'edit'): ?>
     <main class="ujian-container poppins-regular container">
         <header class="ujian-header-tambah">
             <div class="header-left">
@@ -81,7 +92,7 @@
                 <input type="hidden" name="id_ujian" value="<?= $data['ujian']['id_ujian'] ?>">
             <?php endif; ?>
             <input type="hidden" name="id_user" value="<?= $_SESSION['user']['id'] ?? 1; ?>">
-                
+
             <section class="ujian-card">
                 <div class="card-header">
                     <h3><i class="ph ph-info" style="color:var(--color-primary); ;"></i> Informasi Utama</h3>
@@ -96,25 +107,33 @@
                     <div class="form-group-row">
                         <div class="form-input">
                             <label>Deskripsi Ujian</label>
-                            <textarea name="deskripsi_ujian" rows="2"><?= $data['ujian']['deskripsi_ujian'] ?? '' ?></textarea>
+                            <textarea name="deskripsi_ujian"
+                                rows="2"><?= $data['ujian']['deskripsi_ujian'] ?? '' ?></textarea>
                         </div>
                     </div>
                     <div class="form-group-grid">
                         <div class="form-input">
                             <label>Pilih Kelas</label>
-                            <div class="class-selection-container" style="max-height: 150px; overflow-y: auto; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc;">
+                            <div class="class-selection-container"
+                                style="max-height: 150px; overflow-y: auto; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc;">
                                 <div style="margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
-                                    <label style="display: flex; align-items: center; justify-content: flex-start; gap: 8px; cursor: pointer; font-weight: 600;">
-                                        <input type="checkbox" id="selectAllKelas" style="width: 20px;" onclick="toggleSelectAll(this)"> Pilih Semua
+                                    <label
+                                        style="display: flex; align-items: center; justify-content: flex-start; gap: 8px; cursor: pointer; font-weight: 600;">
+                                        <input type="checkbox" id="selectAllKelas" style="width: 20px;"
+                                            onclick="toggleSelectAll(this)"> Pilih Semua
                                     </label>
                                 </div>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
-                                    <?php 
+                                <div
+                                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                                    <?php
                                     $selectedKelas = isset($data['ujian']['id_kelas']) ? json_decode($data['ujian']['id_kelas'], true) : [];
-                                    if (!is_array($selectedKelas)) $selectedKelas = [];
-                                    foreach($data['kelas'] as $kls) : ?>
-                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
-                                            <input type="checkbox" name="id_kelas[]" class="class-checkbox" style="width: 20px;" value="<?= $kls['id_kelas']; ?>" <?= in_array($kls['id_kelas'], $selectedKelas) ? 'checked' : '' ?>>
+                                    if (!is_array($selectedKelas))
+                                        $selectedKelas = [];
+                                    foreach ($data['kelas'] as $kls): ?>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                                            <input type="checkbox" name="id_kelas[]" class="class-checkbox" style="width: 20px;"
+                                                value="<?= $kls['id_kelas']; ?>" <?= in_array($kls['id_kelas'], $selectedKelas) ? 'checked' : '' ?>>
                                             <?= $kls['tingkat'] ?> - <?= $kls['nama_jurusan'] ?>
                                         </label>
                                     <?php endforeach; ?>
@@ -124,9 +143,11 @@
                         <div class="form-input">
                             <label>Kode Ujian</label>
                             <div style="display: flex; gap: 10px;">
-                                <input type="text" name="kode_ujian" id="kode_ujian" value="<?= $data['ujian']['kode_ujian'] ?? '' ?>" required style="flex: 1;">
-                                <button type="button" class="btn-primary" onclick="generateKode()" style="padding: 0 15px; border-radius: 12px; font-size: 0.8rem; white-space: nowrap;">
-                                     Generate
+                                <input type="text" name="kode_ujian" id="kode_ujian"
+                                    value="<?= $data['ujian']['kode_ujian'] ?? '' ?>" required style="flex: 1;">
+                                <button type="button" class="btn-primary" onclick="generateKode()"
+                                    style="padding: 0 15px; border-radius: 12px; font-size: 0.8rem; white-space: nowrap;">
+                                    Generate
                                 </button>
                             </div>
                         </div>
@@ -134,35 +155,39 @@
                     <div class="form-group-grid">
                         <div class="form-input">
                             <label>Jadwal Mulai</label>
-                            <input type="datetime-local" name="jadwal_mulai" value="<?= isset($data['ujian']['jadwal_mulai']) ? date('Y-m-d\TH:i', strtotime($data['ujian']['jadwal_mulai'])) : '' ?>" required>
+                            <input type="datetime-local" name="jadwal_mulai"
+                                value="<?= isset($data['ujian']['jadwal_mulai']) ? date('Y-m-d\TH:i', strtotime($data['ujian']['jadwal_mulai'])) : '' ?>"
+                                required>
                         </div>
                         <div class="form-input">
                             <label>Jadwal Selesai</label>
-                            <input type="datetime-local" name="jadwal_selesai" value="<?= isset($data['ujian']['jadwal_selesai']) ? date('Y-m-d\TH:i', strtotime($data['ujian']['jadwal_selesai'])) : '' ?>" required>
+                            <input type="datetime-local" name="jadwal_selesai"
+                                value="<?= isset($data['ujian']['jadwal_selesai']) ? date('Y-m-d\TH:i', strtotime($data['ujian']['jadwal_selesai'])) : '' ?>"
+                                required>
                         </div>
                     </div>
                     <div class="form-group-grid">
                         <div class="form-input">
                             <label>Waktu (Menit)</label>
-                            <?php 
-                                $waktu = $data['ujian']['waktu_pengerjaan'] ?? '00:00:00';
-                                $parts = explode(':', $waktu);
-                                $totalMenit = (isset($parts[0]) && isset($parts[1])) ? ((int)$parts[0] * 60 + (int)$parts[1]) : 0;
+                            <?php
+                            $waktu = $data['ujian']['waktu_pengerjaan'] ?? '00:00:00';
+                            $parts = explode(':', $waktu);
+                            $totalMenit = (isset($parts[0]) && isset($parts[1])) ? ((int) $parts[0] * 60 + (int) $parts[1]) : 0;
                             ?>
                             <input type="number" name="waktu_pengerjaan" value="<?= $totalMenit ?>" required>
                         </div>
                         <div class="form-input">
                             <label>Penilaian</label>
                             <select name="penilaian">
-                                <option value="Otomatis" <?= (isset($data['ujian']['penilaian']) && $data['ujian']['penilaian'] == 'Otomatis') ? 'selected' : '' ?>>Otomatis</option>
-                                <option value="Manual" <?= (isset($data['ujian']['penilaian']) && $data['ujian']['penilaian'] == 'Manual') ? 'selected' : '' ?>>Manual</option>
+                                <option value="otomatis" <?= (isset($data['ujian']['penilaian']) && $data['ujian']['penilaian'] == 'otomatis') ? 'selected' : '' ?>>Otomatis</option>
+                                <option value="manual" <?= (isset($data['ujian']['penilaian']) && $data['ujian']['penilaian'] == 'manual') ? 'selected' : '' ?>>Manual</option>
                             </select>
                         </div>
                         <div class="form-input">
                             <label>Status</label>
                             <select name="status">
-                                <option value="Aktif" <?= (isset($data['ujian']['status']) && $data['ujian']['status'] == 'Aktif') ? 'selected' : '' ?>>Aktif</option>
-                                <option value="Nonaktif" <?= (isset($data['ujian']['status']) && $data['ujian']['status'] == 'Nonaktif') ? 'selected' : '' ?>>Nonaktif</option>
+                                <option value="aktif" <?= (isset($data['ujian']['status']) && $data['ujian']['status'] == 'aktif') ? 'selected' : '' ?>>Aktif</option>
+                                <option value="nonaktif" <?= (isset($data['ujian']['status']) && $data['ujian']['status'] == 'nonaktif') ? 'selected' : '' ?>>Nonaktif</option>
                             </select>
                         </div>
                     </div>
@@ -186,9 +211,10 @@
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <h3><i class="ph ph-database" style="color: var(--color-primary);"></i> Pilih dari Bank Soal</h3>
                         <div class="form-input">
-                            <select id="filterBankKategori" class="form-control" style="width: 200px;" onchange="filterBankSoal()">
+                            <select id="filterBankKategori" class="form-control" style="width: 200px;"
+                                onchange="filterBankSoal()">
                                 <option value="">Semua Kategori</option>
-                                <?php foreach($data['kategori'] as $k): ?>
+                                <?php foreach ($data['kategori'] as $k): ?>
                                     <option value="<?= $k['id_kategori'] ?>"><?= $k['nama_kategori'] ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -196,17 +222,30 @@
                     </div>
                     <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                         <div id="bank-soal-list" style="display: grid; gap: 15px;">
-                            <?php 
+                            <?php
                             $currentSoalIds = isset($data['soal']) ? array_column($data['soal'], 'id_bank_soal') : [];
-                            foreach($data['bank_soal'] as $bs): 
-                            ?>
-                                <label class="bank-soal-item" data-kategori="<?= $bs['id_kategori'] ?>" style="display: flex; gap: 15px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.3s;">
-                                    <input type="checkbox" name="selected_soal[]" value="<?= $bs['id_bank_soal'] ?>" <?= in_array($bs['id_bank_soal'], $currentSoalIds) ? 'checked' : '' ?> style="width: 20px; height: 20px; margin-top: 5px;">
+                            foreach ($data['bank_soal'] as $bs):
+                                ?>
+                                <label class="bank-soal-item" data-kategori="<?= $bs['id_kategori'] ?>"
+                                    style="display: flex; gap: 15px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.3s;">
+                                    <input type="checkbox" name="selected_soal[]" value="<?= $bs['id_bank_soal'] ?>"
+                                        <?= in_array($bs['id_bank_soal'], $currentSoalIds) ? 'checked' : '' ?>
+                                        style="width: 20px; height: 20px; margin-top: 5px;">
                                     <div>
-                                        <div style="font-weight: 600; color: #1e293b; margin-bottom: 5px;"><?= $bs['pertanyaan'] ?></div>
+                                        <?php if (!empty($bs['gambar'])): ?>
+                                            <div style="width: 300px; height: 150px; overflow: hidden; margin-bottom: 10px;">
+                                                <img style="object-fit: contain; width: 100%; height: 100%;"  src="<?= Constant::DIRNAME ?>asset/img/<?= $bs['gambar'] ?>"
+                                                    alt="Gambar soal  ?>">
+                                            </div>
+                                        <?php endif; ?>
+                                        <div style="font-weight: 600; color: #1e293b; margin-bottom: 5px;">
+                                            <?= $bs['pertanyaan'] ?>
+                                        </div>
                                         <div style="font-size: 0.8rem; color: #64748b;">
-                                            <span style="background: #f1f5f9; padding: 2px 8px; border-radius: 10px;"><?= $bs['nama_kategori'] ?? 'Tanpa Kategori' ?></span>
-                                            <span style="margin-left: 10px;">A: <?= $bs['ja'] ?> | B: <?= $bs['jb'] ?> | C: <?= $bs['jc'] ?> | D: <?= $bs['jd'] ?></span>
+                                            <span
+                                                style="background: #f1f5f9; padding: 2px 8px; border-radius: 10px;"><?= $bs['nama_kategori'] ?? 'Tanpa Kategori' ?></span>
+                                            <span style="margin-left: 10px;">A: <?= $bs['ja'] ?> | B: <?= $bs['jb'] ?> | C:
+                                                <?= $bs['jc'] ?> | D: <?= $bs['jd'] ?></span>
                                         </div>
                                     </div>
                                 </label>
@@ -219,11 +258,12 @@
             <div id="section-manual">
                 <div id="soal-container">
                     <?php if ($data['halaman'] == 'edit' && !empty($data['soal'])): ?>
-                        <?php foreach($data['soal'] as $index => $s): ?>
+                        <?php foreach ($data['soal'] as $index => $s): ?>
                             <div class="ujian-card soal-item">
                                 <div class="card-header-soal">
                                     <span class="nomor-label">Soal #<?= $index + 1 ?></span>
-                                    <button type="button" class="btn-remove-soal" onclick="hapusSoal(this)"><i class="ph ph-trash"></i></button>
+                                    <button type="button" class="btn-remove-soal" onclick="hapusSoal(this)"><i
+                                            class="ph ph-trash"></i></button>
                                 </div>
                                 <div class="card-body">
                                     <input type="hidden" name="id_bank_soal_manual[]" value="<?= $s['id_bank_soal'] ?>">
@@ -233,13 +273,22 @@
                                     </div>
                                     <div class="form-input" style="margin-bottom: 15px;">
                                         <label><i class="ph ph-image"></i> Gambar (Opsional)</label>
+                                        <?php if (!empty($s['gambar'])): ?>
+                                            <div class="soal-gambar" style="margin-bottom: 5px;">
+                                                <img src="<?= Constant::DIRNAME ?>asset/img/<?= $s['gambar'] ?>"
+                                                    alt="Gambar soal <?= $index + 1 ?>">
+                                            </div>
+                                        <?php endif; ?>
+                                        <input type="hidden" name="soal_gambar_old[]" value="<?= $s['gambar'] ?>" />
                                         <input type="file" name="soal_gambar[]" accept="image/*">
                                     </div>
                                     <div class="options-grid">
-                                        <?php foreach(['A','B','C','D'] as $opt) : ?>
+                                        <?php foreach (['A', 'B', 'C', 'D'] as $opt): ?>
                                             <div class="option-row">
-                                                <input type="radio" name="jawaban_benar[<?= $index ?>]" value="<?= $opt ?>" <?= ($s['answer'] == 'j'.strtolower($opt)) ? 'checked' : '' ?>>
-                                                <input type="text" name="opsi_<?= strtolower($opt) ?>[]" value="<?= $s['j'.strtolower($opt)] ?>" placeholder="Opsi <?= $opt ?>" required>
+                                                <input type="radio" name="jawaban_benar[<?= $index ?>]" value="<?= $opt ?>"
+                                                    <?= ($s['answer'] == 'j' . strtolower($opt)) ? 'checked' : '' ?>>
+                                                <input type="text" name="opsi_<?= strtolower($opt) ?>[]"
+                                                    value="<?= $s['j' . strtolower($opt)] ?>" placeholder="Opsi <?= $opt ?>" required>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
@@ -254,11 +303,13 @@
             </div>
 
             <div id="section-csv" style="display: none;">
-                <div class="import-csv-box" style="border: 2px dashed #3b82f6; border-radius: 12px; padding: 40px; text-align: center; background: #f8fafc;">
+                <div class="import-csv-box"
+                    style="border: 2px dashed #3b82f6; border-radius: 12px; padding: 40px; text-align: center; background: #f8fafc;">
                     <i class="ph ph-cloud-arrow-up" style="font-size: 48px; color: #3b82f6;"></i>
                     <h3 style="margin-top: 15px;">Upload File CSV</h3>
                     <input type="file" name="file_csv" id="file_csv" accept=".csv" style="display: none;">
-                    <button type="button" class="btn-simpan" onclick="document.getElementById('file_csv').click()">Pilih File</button>
+                    <button type="button" class="btn-simpan" onclick="document.getElementById('file_csv').click()">Pilih
+                        File</button>
                     <div id="csv-file-name" style="margin-top: 10px; color: #10b981;"></div>
                 </div>
             </div>
@@ -282,7 +333,7 @@
                     <input type="file" name="soal_gambar[]" accept="image/*">
                 </div>
                 <div class="options-grid">
-                    <?php foreach(['A','B','C','D'] as $opt) : ?>
+                    <?php foreach (['A', 'B', 'C', 'D'] as $opt): ?>
                         <div class="option-row">
                             <input type="radio" name="jawaban_benar[INDEX]" value="<?= $opt ?>">
                             <input type="text" name="opsi_<?= strtolower($opt) ?>[]" placeholder="Opsi <?= $opt ?>" required>
@@ -313,9 +364,9 @@
         }
 
         function hapusSoal(btn) {
-            if (confirm('Hapus soal ini?')) { 
-                btn.closest('.soal-item').remove(); 
-                aturUlangNomor(); 
+            if (confirm('Hapus soal ini?')) {
+                btn.closest('.soal-item').remove();
+                aturUlangNomor();
             }
         }
 
@@ -372,16 +423,16 @@
 
         function toggleSelectAll(source) {
             checkboxes = document.getElementsByClassName('class-checkbox');
-            for(var i=0, n=checkboxes.length;i<n;i++) {
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
                 checkboxes[i].checked = source.checked;
             }
         }
 
-        document.getElementById('file_csv').onchange = function() {
+        document.getElementById('file_csv').onchange = function () {
             document.getElementById('csv-file-name').innerText = "File terpilih: " + this.files[0].name;
         };
 
-        window.onload = () => { 
+        window.onload = () => {
             aturUlangNomor();
         };
     </script>

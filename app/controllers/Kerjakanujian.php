@@ -4,24 +4,17 @@ class Kerjakanujian extends Controller
 {
     public function index($id_ujian = null)
     {
-        if ($_SESSION['user']['role'] !== 'siswa') {
-            header('location: ' . Constant::DIRNAME . 'dashboard');
-            exit;
-        }
 
         if ($id_ujian === null) {
+            Flasher::setFlash('ID ujian tidak valid!', 'error');
             header('location: ' . Constant::DIRNAME . 'ujianSiswa');
             exit;
         }
 
-        $nisn = $_SESSION['user']['username'];
-        $model = $this->model('Kerjakanujian_model');
-
-        // 2. Validasi Keberadaan Ujian
-        $ujian = $model->getUjianById($id_ujian);
+        $ujian = $this->model('Kerjakanujian_model')->getUjianById($id_ujian);
         if (!$ujian) {
             Flasher::setFlash('Ujian tidak ditemukan.', 'error');
-            header('location: ' . Constant::DIRNAME . 'ujianSiswa');
+            header('location: ' . Constant::DIRNAME . 'ujiansiswa');
             exit;
         }
 
@@ -31,19 +24,19 @@ class Kerjakanujian extends Controller
 
         if ($now < $mulai || $now > $selesai) {
             Flasher::setFlash('Ujian tidak tersedia saat ini.', 'error');
-            header('location: ' . Constant::DIRNAME . 'ujianSiswa');
+            header('location: ' . Constant::DIRNAME . 'ujiansiswa');
             exit;
         }
 
-        $sesiUjian = $model->getSesiUjian($id_ujian, $nisn);
+        $sesiUjian = $this->model('Kerjakanujian_model')->getSesiUjian($id_ujian, $_SESSION['user']['username']);
         if (!$sesiUjian) {
-            $model->buatSesiUjian($id_ujian, $nisn);
-            $sesiUjian = $model->getSesiUjian($id_ujian, $nisn);
+            $this->model('Kerjakanujian_model')->buatSesiUjian($id_ujian, $_SESSION['user']['username']);
+            $sesiUjian = $this->model('Kerjakanujian_model')->getSesiUjian($id_ujian, $_SESSION['user']['username']);
         }
 
         if ($sesiUjian['status'] === 'selesai') {
             Flasher::setFlash('Kamu sudah menyelesaikan ujian ini.', 'info');
-            header('location: ' . Constant::DIRNAME . 'hasilUjian');
+            header('location: ' . Constant::DIRNAME . 'hasilujian');
             exit;
         }
 
@@ -54,14 +47,15 @@ class Kerjakanujian extends Controller
         $batasWaktu = $waktuMasuk + $durasiDetik;
         $sisaWaktu = max(0, $batasWaktu - $now);
 
-        $data['title'] = 'Kerjakan Ujian';
-        $data['css'] = 'style.kerjakanujian';
         $data['ujian'] = $ujian;
         $data['soalList'] = $soalList;
         $data['jawabanSiswa'] = $jawabanSiswa;
         $data['sesiUjian'] = $sesiUjian;
         $data['sisaWaktu'] = $sisaWaktu;
         $data['totalSoal'] = count($soalList);
+
+        $data['title'] = 'Kerjakan Ujian';
+        $data['css'] = 'style.kerjakanujian';
 
         $this->view('templates/header', $data);
         $this->view('kerjakanujian/index', $data);

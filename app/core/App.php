@@ -5,7 +5,7 @@ class App
 {
 	private string|object $class = "Home", $method = "index";
 	private array $params = [];
-	private array $protected = ['Dashboard', 'Profile', 'Koreksi', 'Monitoring', 'Banksoal', 'Hasilujian', 'Jurusan', 'Pengaturan', 'Pengguna', 'Pengumuman', 'Ujian', 'Ujiansiswa', 'Log'];
+	private array $protected = ['Dashboard', 'Profile', 'Koreksi', 'Monitoring', 'Banksoal', 'Hasilujian', 'Jurusan', 'Pengaturan', 'Pengguna', 'Pengumuman', 'Ujian', 'Ujiansiswa', 'Log', 'Kerjakanujian'];
 
 	public function __construct()
 	{
@@ -20,8 +20,10 @@ class App
 		}
 
 		$this->isMaintenance($this->class);
-		
 		$this->authentication($this->class);
+		$this->isAdmin($this->class);
+		$this->isPetugas($this->class);
+		$this->isSiswa($this->class);
 
 		require_once $dir . $this->class . '.php';
 		$this->class = new $this->class();
@@ -56,9 +58,14 @@ class App
 	public function authentication(string $halaman)
 	{
 		if (!isset($_SESSION['user']) && in_array($halaman, $this->protected)) {
-			Flasher::setFLash("Silahkan login terlebih dahulu", "error");
-			header('location: ' . Constant::DIRNAME . 'login');
-			exit;
+			$cookie = json_decode($_COOKIE['key'], true);
+			if(isset($_COOKIE['token']) && password_verify($cookie["id"], $_COOKIE['token'])) {
+				$_SESSION['user'] = $cookie;
+			} else {
+				Flasher::setFLash("Silahkan login terlebih dahulu", "error");
+				header('location: ' . Constant::DIRNAME . 'login');
+				exit;
+			}
 		}
 
 		if (isset($_SESSION['user']) && in_array($halaman, ["Login", "Register"])) {
@@ -80,6 +87,36 @@ class App
 		if($halaman != "Maintenance" && $data["maintenance"] == 1 && $_SESSION["user"]["role"] != "admin") {
 			header('location: ' . Constant::DIRNAME . 'maintenance');
 			exit;
+		}
+	}
+
+	public function isSiswa(string $halaman) {
+		if(isset($_SESSION["user"])) {
+			$isHalaman = ["Dashboard", "Ujiansiswa", "Hasilujian", "Profile", "Kerjakanujian", "Koreksi", "Notification"];
+			if(!in_array($halaman, $isHalaman) && $_SESSION["user"]["role"] == "siswa") {
+				header('location: ' . Constant::DIRNAME . 'dashboard');
+				exit;
+			}
+		}
+	}
+
+	public function isPetugas(string $halaman) {
+		if(isset($_SESSION["user"])) {
+			$isHalaman = ["Dashboard", "Ujian", "Hasilujian", "Profile", "Koreksi", "Banksoal", "Notification"];
+			if(!in_array($halaman, $isHalaman) && $_SESSION["user"]["role"] == "petugas") {
+				header('location: ' . Constant::DIRNAME . 'dashboard');
+				exit;
+			}
+		}
+	}
+
+	public function isAdmin(string $halaman) {
+		if(isset($_SESSION["user"])) {
+			$isHalaman = ["Dashboard", "Pengguna", "Pengumuman", "Pengaturan", "Jurusan", "Banksoal", "Ujian", "Ujiansiswa", "Hasilujian", "Profile", "Kerjakanujian", "Koreksi", "Log", "Notification"];
+			if(!in_array($halaman, $isHalaman) && $_SESSION["user"]["role"] == "admin") {
+				header('location: ' . Constant::DIRNAME . 'dashboard');
+				exit;
+			}
 		}
 	}
 }

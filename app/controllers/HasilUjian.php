@@ -1,29 +1,19 @@
 <?php
 
-class HasilUjian extends Controller {
+class Hasilujian extends Controller {
     public function index() {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== "siswa") {
-            header('location: ' . Constant::DIRNAME . 'login');
-            exit;
-        }
 
-        $username = $_SESSION['user']['username'];
-
-        $data["title"] = "Hasil Ujian";
-        $data["css"] = "style.hasil.ujian";
-
-        $model = $this->model('Hasilujian_model');
-        $data["stats"] = $model->getStatistikSiswa($username);
-
-        $riwayat = $model->getRiwayatUjianSiswa($username);
-
+        $data["stats"] = $this->model('Hasilujian_model')->getStatistikSiswa($_SESSION['user']['username']);
+        $riwayat = $this->model('Hasilujian_model')->getRiwayatUjianSiswa($_SESSION['user']['username']);
         foreach ($riwayat as $key => $value) {
-            $rankingData = $model->getPeringkatSiswa($value['id_ujian'], $username);
+            $rankingData = $this->model('Hasilujian_model')->getPeringkatSiswa($value['id_ujian'], $_SESSION['user']['username']);
             $riwayat[$key]['peringkat'] = $rankingData['rank'];
             $riwayat[$key]['total_peserta'] = $rankingData['total_peserta'];
         }
-
         $data["riwayat"] = $riwayat;
+
+        $data["title"] = "Hasil Ujian";
+        $data["css"] = "style.hasil.ujian";
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);

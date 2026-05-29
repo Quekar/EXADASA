@@ -28,7 +28,6 @@ function showToast(type, message) {
   toast.style.gap = "10px";
   toast.style.zIndex = "9999";
 
-  // Animasi awal
   toast.style.transform = "translateX(150%)";
   toast.style.opacity = "0";
   toast.style.transition = "all 0.5s ease";

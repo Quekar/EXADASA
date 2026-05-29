@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             const data = await res.json();
-            console.log(data);
             if(!data) {
                 showToast('error','Gagal mengubah koreksi.');
                 return;

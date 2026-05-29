@@ -4,14 +4,11 @@ class Pengguna extends Controller
 {
     public function index()
     {
-        if ($_SESSION['user']['role'] !== "admin") {
-            header('location: ' . Constant::DIRNAME . 'dashboard');
-            exit;
-        }
         $data["jurusan"] = $this->model('Jurusan_model')->getAllJurusan();
         $data["siswa"] = $this->model('Pengguna_model')->getAllSiswa();
         $data["petugas"] = $this->model('Pengguna_model')->getAllPetugas();
         $data["admin"] = $this->model('Pengguna_model')->getAllAdmin();
+
         $data["title"] = "Pengguna";
         $data["css"] = "style.pengguna";
         $this->view('templates/header', $data);
@@ -62,8 +59,7 @@ class Pengguna extends Controller
 
 
         if ($this->model('Register_model')->register($data)) {
-            $pengguna = $_SESSION['user']['username'];
-            $this->model('Dashboard_model')->insertLog($pengguna, 'Mendaftarkan pengguna baru: ' . $data['username']);
+            $this->model('Dashboard_model')->insertLog($_SESSION['user']['username'], 'Mendaftarkan pengguna baru: ' . $data['username']);
             Flasher::setFlash('Pengguna berhasil ditambahkan', 'success');
             header('location: ' . Constant::DIRNAME . 'pengguna');
             exit;
