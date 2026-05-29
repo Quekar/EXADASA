@@ -8,6 +8,7 @@
     <meta name="description" content="Aplikasi Ujian Online berbasis website" />
     <meta name="keyword" content="ujian, ujian online, Aplikasi ujian" />
     <title><?= $data["title"] ?></title>
+    <link rel="icon" href="<?= Constant::DIRNAME ?>asset/img/logo_smandasa.webp" type="image/png">
     <link rel="stylesheet" href="<?= Constant::DIRNAME ?>css/global.css">
 
     <!-- ICON -->
