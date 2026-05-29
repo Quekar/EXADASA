@@ -13,7 +13,7 @@ class Register_model
     {
         try {
             $username = htmlspecialchars(stripcslashes($data["username"]));
-            $password = $data["password"]; // Don't escape password
+            $password = $data["password"];
             $nama_lengkap = htmlspecialchars(stripcslashes($data["nama_lengkap"]));
             $role = $data["role"];
 

@@ -69,4 +69,28 @@ class Pengguna extends Controller
             exit;
         }
     }
+
+    public function hapus($username) {
+        if($_SESSION['user']['role'] !== 'admin') {
+            header('location: ' . Constant::DIRNAME . 'dashboard');
+            exit;
+        }
+
+        if(empty($username)) {
+            Flasher::setFlash('Data tidak valid!', 'error');
+            header('location: ' . Constant::DIRNAME . 'pengguna');
+            exit;
+        }
+
+        if($this->model("Pengguna_model")->hapus($username) > 0) {
+            $this->model("Dashboard_model")->insertLog($_SESSION['user']['username'], 'Menghapus pengguna: ' . $username);
+            Flasher::setFlash('Pengguna berhasil dihapus', 'success');
+            header('location: ' . Constant::DIRNAME . 'pengguna');
+            exit;
+        } else {
+            Flasher::setFlash('Pengguna gagal dihapus', 'error');
+            header('location: ' . Constant::DIRNAME . 'pengguna');
+            exit;
+        }
+    }
 }

@@ -231,6 +231,7 @@ async function submitKodeInternal(id, kode) {
         const data = await res.json();
 
         if (data.success) {
+            localStorage.setItem('pelanggaran', 0);
             window.location.href = data.redirect;
         } else {
             pesanError.textContent = data.message;

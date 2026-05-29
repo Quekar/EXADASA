@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableAdmin = document.getElementById('table-admin');
     const selectRole = document.getElementById('select-role');
     const searchInput = document.getElementById('searchPengguna');
-
     
     searchInput.addEventListener('input', function () {
         const query = this.value.toLowerCase().trim();

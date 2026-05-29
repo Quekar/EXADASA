@@ -53,7 +53,7 @@ class Dashboard extends Controller
                 'total_pengumuman' => $dashboardModel->countPengumuman()
             ];
 
-            $data['log_aktivitas'] = $dashboardModel->getRecentLog(10);
+            $data['log_aktivitas'] = $dashboardModel->getRecentLog(5);
         }
 
         $this->view('templates/header', $data);
@@ -86,7 +86,7 @@ class Dashboard extends Controller
             $pengguna = $_SESSION['user']['username'] ?? 'Unknown';
             $this->model('Dashboard_model')->insertLog($pengguna, 'Logout dari sistem');
         }
-        
+
         session_destroy();
         unset($_SESSION['user']);
         setcookie("token", "", time() - 7 * 24 * 60 * 60, "/");

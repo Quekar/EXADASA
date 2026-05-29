@@ -151,8 +151,7 @@ $DIRNAME = Constant::DIRNAME;
                     <div class="nav-divider"></div>
                     <div class="exam-warning">
                         <i class="ph ph-warning"></i>
-                        <p class="poppins-regular">Jangan refresh atau pindah tab. Aktivitas akan tercatat oleh
-                            pengawas.</p>
+                        <p class="poppins-regular">Jangan pindah tab. Anda akan terkena pelanggaran sistem.</p>
                     </div>
                 </div>
             </aside>
@@ -353,7 +352,6 @@ $DIRNAME = Constant::DIRNAME;
         }
     });
 
-    // Auto Fullscreen on first click
     function triggerFullscreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(() => { });
@@ -361,6 +359,7 @@ $DIRNAME = Constant::DIRNAME;
         }
         document.removeEventListener('click', triggerFullscreen);
     }
+
     document.addEventListener('click', triggerFullscreen);
 
     window.addEventListener('load', () => {
@@ -368,5 +367,51 @@ $DIRNAME = Constant::DIRNAME;
             console.log('Full-Screen di tolak');
         });
     });
+
+    let pelanggaran = parseInt(localStorage.getItem('pelanggaran'));
+    const batasPelanggaran = 3;
+
+    function showWarningModal(message) {
+        const oldModal = document.getElementById("warning-modal");
+        if (oldModal) oldModal.remove();
+
+        const modal = document.createElement("div");
+        modal.id = "warning-modal";
+
+        modal.innerHTML = `
+            <div class="warning-modal-content">
+                <div class="warning-icon">⚠️</div>
+                <h3>Peringatan Ujian</h3>
+                <p>${message}</p>
+                <button id="close-warning-modal">
+                    Saya Mengerti
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document
+            .getElementById("close-warning-modal")
+            .addEventListener("click", () => {
+                modal.remove();
+            });
+    }
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            pelanggaran++;
+            localStorage.setItem('pelanggaran', pelanggaran);
+
+            if (pelanggaran >= batasPelanggaran) {
+                showWarningModal("Anda telah keluar dari halaman ujian terlalu sering. Ujian akan dikumpulkan otomatis.");
+                submitUjian(true);
+            } else {
+                showWarningModal(`Anda terdeteksi keluar dari halaman ujian. Pelanggaran ${pelanggaran}/${batasPelanggaran}.`);
+            }
+        }
+    });
+
+    
 
 </script>

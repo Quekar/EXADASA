@@ -70,7 +70,8 @@
                                         <i class="ph ph-pencil-simple"></i>
                                     </button>
                                     <a href="<?= Constant::DIRNAME ?>jurusan/hapus/<?= $j['id_jurusan'] ?>"
-                                        class="btn-icon btn-delete"
+                                        class="btn-danger"
+                                        style="text-decoration: none;"
                                         onclick="return confirm('Apakah Anda yakin ingin menghapus jurusan ini?')"
                                         title="Hapus">
                                         <i class="ph ph-trash"></i>

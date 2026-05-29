@@ -240,30 +240,36 @@ class Koreksi_model
     public function getKoreksiByMapel(string $id_kategori, string $id_kelas, string $nama_siswa)
     {
         try {
-            $sql = "SELECT us.id_ujian_siswa, us.id_ujian, us.nisn, us.status, us.waktu_selesai, us.waktu_masuk,
-               s.nama_lengkap, s.foto,
-               ds.id_kelas, 
-               ns.id_nilai_siswa, ns.total_benar, ns.total_salah, ns.nilai, ns.publik,
-               u.nama_ujian
+            $sql = "SELECT 
+            us.id_ujian_siswa, us.id_ujian, us.nisn, us.status, 
+            us.waktu_selesai, us.waktu_masuk,
+            s.nama_lengkap, s.foto,
+            ds.id_kelas, 
+            ns.id_nilai_siswa, ns.total_benar, ns.total_salah, ns.nilai, ns.publik,
+            u.nama_ujian
         FROM ujian_siswa us
         JOIN siswa s ON us.nisn = s.nisn
         JOIN data_siswa ds ON us.nisn = ds.nisn
         JOIN ujian u ON us.id_ujian = u.id_ujian
-        JOIN ujian_soal ujs ON u.id_ujian = ujs.id_ujian 
-        JOIN bank_soal bs ON ujs.id_bank_soal = bs.id_bank_soal
-        JOIN kategori_soal ks ON bs.id_kategori = ks.id_kategori
         LEFT JOIN nilai_siswa ns ON us.id_ujian_siswa = ns.id_ujian_siswa
         WHERE us.status IN ('selesai', 'timeout')";
 
             if (!empty($id_kategori)) {
-                $sql .= " AND ks.id_kategori = :id_kategori";
+                $sql .= " AND EXISTS (
+        SELECT 1
+        FROM ujian_soal ujs
+        JOIN bank_soal bs ON ujs.id_bank_soal = bs.id_bank_soal
+        WHERE ujs.id_ujian = u.id_ujian
+        AND bs.id_kategori = :id_kategori
+    )";
             }
 
             if (!empty($id_kelas)) {
-                $sql .= " AND JSON_CONTAINS(u.id_kelas, :id_kelas) AND ds.id_kelas = :id_kelas2";
+                $sql .= " AND JSON_CONTAINS(u.id_kelas, :id_kelas)
+              AND ds.id_kelas = :id_kelas2";
             }
 
-            if(!empty($nama_siswa)) {
+            if (!empty($nama_siswa)) {
                 $sql .= " AND s.nama_lengkap LIKE :nama_siswa";
             }
 
@@ -280,7 +286,7 @@ class Koreksi_model
                 $this->db->bind('id_kelas2', $id_kelas);
             }
 
-            if(!empty($nama_siswa)) {
+            if (!empty($nama_siswa)) {
                 $this->db->bind('nama_siswa', '%' . $nama_siswa . '%');
             }
 

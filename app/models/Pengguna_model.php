@@ -42,5 +42,17 @@ class Pengguna_model
         }
     }
 
+    public function hapus(string $username)
+    {
+        try {
+            $this->db->query("DELETE FROM users WHERE username = :username");
+            $this->db->bind('username', $username);
+            $this->db->execute();
+            return $this->db->rowCount();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
 
 }

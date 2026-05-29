@@ -69,7 +69,9 @@
                             </td>
                             <td>
                                 <div>
-                                    <button class="btn-danger">
+                                    <button onclick="handleHapus(this)"
+                                        data-link="<?= Constant::DIRNAME ?>pengguna/hapus/<?= $siswa['nisn'] ?>"
+                                        data-nama="<?= $siswa['nama_lengkap'] ?>" class="btn-danger">
                                         <i class="ph ph-trash"></i>
                                     </button>
                                 </div>
@@ -122,7 +124,9 @@
                             </td>
                             <td>
                                 <div>
-                                    <button class="btn-danger">
+                                    <button onclick="handleHapus(this)"
+                                        data-link="<?= Constant::DIRNAME ?>pengguna/hapus/<?= $petugas['nip'] ?>"
+                                        data-nama="<?= $petugas['nama_lengkap'] ?>" class="btn-danger">
                                         <i class="ph ph-trash"></i>
                                     </button>
                                 </div>
@@ -131,7 +135,8 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="5" style="text-align: center; font-weight: 600; font-size: 18px;">Data petugas tidak ada
+                        <td colspan="5" style="text-align: center; font-weight: 600; font-size: 18px;">Data petugas tidak
+                            ada
                             <i class="ph ph-magnifying-glass"></i>
                         </td>
                     </tr>
@@ -175,7 +180,9 @@
                             </td>
                             <td>
                                 <div>
-                                    <button class="btn-danger">
+                                    <button onclick="handleHapus(this)"
+                                        data-link="<?= Constant::DIRNAME ?>pengguna/hapus/<?= $admin['username'] ?>"
+                                        data-nama="<?= $admin['username'] ?>" class="btn-danger" <?= $_SESSION['user']['username'] === $admin['username'] ? 'disabled' : '' ?>>
                                         <i class="ph ph-trash"></i>
                                     </button>
                                 </div>
@@ -183,11 +190,11 @@
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
-                        <tr>
-                            <td colspan="5" style="text-align: center; font-weight: 600; font-size: 18px;">Data admin tidak ada
-                                <i class="ph ph-magnifying-glass"></i>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: center; font-weight: 600; font-size: 18px;">Data admin tidak ada
+                            <i class="ph ph-magnifying-glass"></i>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -243,14 +250,14 @@
                         <div class="form-input">
                             <label>Email <span style="color: red;">*</span></label>
                             <input type="email" name="email" class="poppins-regular" placeholder="contoh@gmail.com">
-                        <i class="ph ph-envelope"></i>
+                            <i class="ph ph-envelope"></i>
                         </div>
                         <div class="form-input select-group">
                             <label>Jurusan <span style="color: red;">*</span></label>
                             <select id="modal-select-jurusan" name="jurusan" class="poppins-regular">
                                 <option value="" disabled selected>Pilih Jurusan</option>
                                 <?php foreach ($data["jurusan"] as $jurusan): ?>
-                                        <option value="<?= $jurusan['id_jurusan'] ?>"><?= $jurusan['nama_jurusan'] ?></option>
+                                    <option value="<?= $jurusan['id_jurusan'] ?>"><?= $jurusan['nama_jurusan'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                             <i class="ph ph-caret-down" style="position: absolute; top: 50px;"></i>
@@ -354,5 +361,13 @@
         </div>
     </div>
 
-    <script src="<?= Constant::DIRNAME ?>js/pengguna.js"></script>
 </div>
+<script src="<?= Constant::DIRNAME ?>js/pengguna.js"></script>
+<script>
+    function handleHapus(button) {
+        const nama = button.dataset.nama;
+        const link = button.dataset.link;
+        const result = confirm(`Apakah anda yakin ingin menghapus data ${nama}?`);
+        if (result) window.location.href = link;
+    }
+</script>

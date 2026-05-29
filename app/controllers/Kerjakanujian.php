@@ -127,6 +127,7 @@ class Kerjakanujian extends Controller
         $namaUjian = is_array($ujian) ? ($ujian['nama_ujian'] ?? $id_ujian) : $id_ujian;
         $this->model('Dashboard_model')->insertLog($nisn, 'Submit ujian: ' . $namaUjian);
 
+        Flasher::setFlash('Ujian berhasil disubmit.', 'success');
         echo json_encode(['success' => true]);
         exit;
     }

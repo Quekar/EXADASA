@@ -76,9 +76,8 @@ class Dashboard_model
                 "SELECT pengguna, deskripsi, created_at 
                  FROM log_aktivitas 
                  ORDER BY created_at DESC 
-                 LIMIT :limit"
+                 LIMIT $limit"
             );
-            $this->db->bind('limit', (string) $limit);
             return $this->db->resultSet() ?: [];
         } catch (PDOException $e) {
             return [];

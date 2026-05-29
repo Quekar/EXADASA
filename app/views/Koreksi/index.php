@@ -6,16 +6,6 @@
                 Periksa jawaban, beri nilai/feedback, dan publish hasil ke siswa.
             </p>
         </div>
-        <?php if ($_SESSION['user']['role'] == 'petugas' || $_SESSION['user']['role'] == 'admin'): ?>
-            <div class="page-header__actions">
-                <button class="btn-primary poppins-medium">
-                    <i class="ph ph-file-xls"></i> Export Excel
-                </button>
-                <button class="btn-primary poppins-medium">
-                    <i class="ph ph-printer"></i> Cetak PDF
-                </button>
-            </div>
-        <?php endif; ?>
     </div>
 
 
@@ -28,7 +18,7 @@
             <div class="group-select">
                 <div class="select-wrap">
                     <select id="filter-mapel" class="form-select poppins-regular">
-                        <option value="" disabled selected>Mata Pelajaran</option>
+                        <option value="">Mata Pelajaran</option>
                         <?php foreach ($data["kategori_soal"] as $kategori): ?>
                             <option value="<?= $kategori["id_kategori"] ?>"><?= $kategori["nama_kategori"] ?></option>
                         <?php endforeach; ?>
