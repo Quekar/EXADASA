@@ -159,7 +159,6 @@ table {
   border-spacing: 0;
 }
 
-/* STYLE SCROLL */
 ::-webkit-scrollbar {
   width: 4px;
   height: 5px;
@@ -172,6 +171,12 @@ table {
 ::-webkit-scrollbar-thumb {
   background: var(--color-primary);
   border-radius: 10px;
+}
+
+.input-required::after {
+  content: "*";
+  color: #ff0000;
+  margin-left: 5px;
 }
 
 .poppins-light {
@@ -519,23 +524,22 @@ aside .btn-logout:hover {
 }
 
 .btn-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 35px;
   height: 35px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;
-  background: rgba(255, 234, 0, 0.1);
-  border: 1px solid rgb(255, 234, 0);
-  color: rgb(255, 234, 0);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  font-weight: 500;
+  border-radius: 8px;
+  background: #f0f7ff;
+  color: #3b82f6;
+  border: none;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-edit:hover {
-  background: rgba(255, 234, 0, 0.2);
+  background: #e2f0ff;
+  color: #1d4ed8;
 }
 
 .btn-danger {
@@ -639,7 +643,7 @@ aside .btn-logout:hover {
   border: none;
   background: #dc2626;
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   padding: 12px 18px;
   border-radius: 10px;
   cursor: pointer;
@@ -671,7 +675,7 @@ aside .btn-logout:hover {
 }
 
 /* ==========================================================================
-   SECTION: style.banksoal.css (Scoped under body.banksoal)
+   SECTION: style.banksoal.css
    ========================================================================== */
 body.banksoal .banksoal-container {
   min-height: 100vh;
@@ -681,7 +685,9 @@ body.banksoal .banksoal-container {
 body.banksoal .banksoal-header {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
+  gap: 15px;
   margin-bottom: 30px;
 }
 body.banksoal .banksoal-title h1 {
@@ -1457,6 +1463,7 @@ body.hasil-ujian .hasil-ujian-content .hasil-ujian-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
 }
+
 body.hasil-ujian .hasil-ujian-content .hasil-ujian-info span {
   font-size: 0.75rem;
   font-weight: 600;
@@ -1499,12 +1506,14 @@ body.hasil-ujian .hasil-ujian-list .hasil-ujian-card {
   background-color: white;
   border-radius: 20px;
   padding: 20px 30px;
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
   transition: all 0.3s ease;
 }
+
 body.hasil-ujian .hasil-ujian-list .hasil-ujian-card:hover {
   transform: translateX(10px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -1554,6 +1563,7 @@ body.hasil-ujian .skor-border strong:last-child {
 }
 body.hasil-ujian .hasil-ujian-list .hasil-ujian-info {
   flex: 1;
+  min-width: 300px;
 }
 body.hasil-ujian .nama-ujian,
 body.hasil-ujian .ujian-pending {
@@ -2086,13 +2096,24 @@ body.jurusan .btn-icon {
   cursor: pointer;
   transition: all 0.2s;
 }
+
 body.jurusan .btn-edit {
-  background: #f7f70078;
-  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  background: #f0f7ff;
+  color: #3b82f6;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
 }
+
 body.jurusan .btn-edit:hover {
-  background: #f7f700;
-  color: #1e293b;
+  background: #e0f2ff;
+  color: #1d4ed8;
 }
 body.jurusan .btn-delete {
   background: #fff1f2;
@@ -5339,6 +5360,7 @@ body.pengguna .card {
   gap: 10px;
   flex-wrap: wrap;
 }
+
 body.pengguna .filter-search {
   display: flex;
   align-items: center;
@@ -5810,6 +5832,26 @@ body.pengumuman .card-body .info-time {
 body.pengumuman .card-body .title {
   font-size: 1.1rem;
   font-weight: 600;
+}
+body.pengumuman .btn-delete {
+  background: #fff1f2;
+  color: #f43f5e;
+}
+
+body.pengumuman .btn-delete:hover {
+  background: #fef2f2;
+}
+
+body.pengumuman .btn-icon {
+   width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 body.pengumuman .card-body .deskripsi {
   font-size: 0.9rem;
@@ -6459,11 +6501,14 @@ body.ujian .ujian-table td:nth-child(1) h2 {
 }
 body.ujian .ujian-table td:nth-child(1) .ujian-info {
   display: flex;
+  margin-top: 4px;
   align-items: center;
-  gap: 10px;
+  gap: 2px 10px;
+  flex-wrap: wrap;
 }
 body.ujian .ujian-table td:nth-child(1) .ujian-info span {
   font-size: 0.7rem;
+  min-width: 70px;
   display: inline-flex;
   align-items: center;
   gap: 3px;

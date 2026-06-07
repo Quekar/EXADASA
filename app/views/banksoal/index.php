@@ -98,11 +98,11 @@
                     <input onchange="previewGambar()" type="file" name="form_gambar" id="form_gambar" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label>Pertanyaan</label>
+                    <label class="input-required">Pertanyaan</label>
                     <textarea name="pertanyaan" id="form_pertanyaan" class="form-control" rows="3" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Kategori</label>
+                    <label class="input-required">Kategori</label>
                     <select name="id_kategori" id="form_id_kategori" class="form-control" required>
                         <option value="">Pilih Kategori</option>
                         <?php foreach ($data['kategori'] as $k): ?>
@@ -111,7 +111,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Opsi Jawaban</label>
+                    <label class="input-required">Opsi Jawaban</label>
                     <div style="display: grid; gap: 10px;">
                         <label for="" style="display: flex; align-items: center; gap: 10px;">
                             <span
@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Jawaban Benar</label>
+                    <label class="input-required">Jawaban Benar</label>
                     <div class="radio-group">
                         <label class="radio-item">
                             <input type="radio" name="jawaban_benar" value="ja" id="form_ans_ja"> A

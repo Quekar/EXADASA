@@ -20,7 +20,7 @@
                             <i class="ph ph-pencil"></i>
                         </button>
                         <a href="<?= Constant::DIRNAME ?>pengumuman/hapus/<?= $p['id_pengumuman'] ?>" 
-                        class="btn-danger" 
+                        class="btn-icon btn-delete" 
                         onclick="return confirm('Apakah Anda yakin ingin menghapus pengumuman ini?')"
                         style="display: flex; justify-content: center; align-items: center; text-decoration: none;">
                             <i class="ph ph-trash"></i>

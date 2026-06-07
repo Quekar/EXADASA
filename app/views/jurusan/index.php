@@ -65,12 +65,12 @@
                             </td>
                             <td>
                                 <div class="action-btns">
-                                    <button class="btn-icon btn-edit tampilModalUbah" data-id="<?= $j['id_jurusan'] ?>"
+                                    <button class="btn-edit tampilModalUbah" data-id="<?= $j['id_jurusan'] ?>"
                                         title="Edit">
                                         <i class="ph ph-pencil-simple"></i>
                                     </button>
                                     <a href="<?= Constant::DIRNAME ?>jurusan/hapus/<?= $j['id_jurusan'] ?>"
-                                        class="btn-danger"
+                                        class="btn-icon btn-delete"
                                         style="text-decoration: none;"
                                         onclick="return confirm('Apakah Anda yakin ingin menghapus jurusan ini?')"
                                         title="Hapus">

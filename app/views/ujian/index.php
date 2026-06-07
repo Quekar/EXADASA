@@ -35,7 +35,7 @@
                                     <h2 class="poppins-semibold"><?= $u['nama_ujian'] ?></h2>
                                     <div class="ujian-info">
                                         <span><i class="ph ph-clock"></i> <?= $u['waktu_pengerjaan'] ?>m</span>
-                                        <span><i class="ph ph-key"></i> <?= $u['kode_ujian'] ?></span>
+                                        <span><i class="ph ph-key"></i> <?= empty($u['kode_ujian']) ? 'Tidak pake kode' : $u['kode_ujian'] ?></span>
                                     </div>
                                 </td>
                                 <td>
@@ -100,13 +100,13 @@
                 <div class="card-body">
                     <div class="form-group-row">
                         <div class="form-input">
-                            <label>Nama Ujian</label>
+                            <label class="input-required">Nama Ujian</label>
                             <input type="text" name="nama_ujian" value="<?= $data['ujian']['nama_ujian'] ?? '' ?>" required>
                         </div>
                     </div>
                     <div class="form-group-row">
                         <div class="form-input">
-                            <label>Deskripsi Ujian</label>
+                            <label >Deskripsi Ujian</label>
                             <textarea name="deskripsi_ujian"
                                 rows="2"><?= $data['ujian']['deskripsi_ujian'] ?? '' ?></textarea>
                         </div>
@@ -144,7 +144,7 @@
                             <label>Kode Ujian</label>
                             <div style="display: flex; gap: 10px;">
                                 <input type="text" name="kode_ujian" id="kode_ujian"
-                                    value="<?= $data['ujian']['kode_ujian'] ?? '' ?>" required style="flex: 1;">
+                                    value="<?= $data['ujian']['kode_ujian'] ?? '' ?>" style="flex: 1;">
                                 <button type="button" class="btn-primary" onclick="generateKode()"
                                     style="padding: 0 15px; border-radius: 12px; font-size: 0.8rem; white-space: nowrap;">
                                     Generate
@@ -154,13 +154,13 @@
                     </div>
                     <div class="form-group-grid">
                         <div class="form-input">
-                            <label>Jadwal Mulai</label>
+                            <label class="input-required">Jadwal Mulai</label>
                             <input type="datetime-local" name="jadwal_mulai"
                                 value="<?= isset($data['ujian']['jadwal_mulai']) ? date('Y-m-d\TH:i', strtotime($data['ujian']['jadwal_mulai'])) : '' ?>"
                                 required>
                         </div>
                         <div class="form-input">
-                            <label>Jadwal Selesai</label>
+                            <label class="input-required">Jadwal Selesai</label>
                             <input type="datetime-local" name="jadwal_selesai"
                                 value="<?= isset($data['ujian']['jadwal_selesai']) ? date('Y-m-d\TH:i', strtotime($data['ujian']['jadwal_selesai'])) : '' ?>"
                                 required>
@@ -168,7 +168,7 @@
                     </div>
                     <div class="form-group-grid">
                         <div class="form-input">
-                            <label>Waktu (Menit)</label>
+                            <label class="input-required">Waktu (Menit)</label>
                             <?php
                             $waktu = $data['ujian']['waktu_pengerjaan'] ?? '00:00:00';
                             $parts = explode(':', $waktu);

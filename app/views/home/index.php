@@ -39,13 +39,15 @@
                 ranking kelas — semua dalam satu dashboard yang elegan.
             </p>
             <div class="box-btn">
-                <button class="btn-primary poppins-semibold">
+                <button onclick="window.location.href = '<?= Constant::DIRNAME ?>login'" class="btn-primary poppins-semibold">
                     Mulai Ujian
                     <i class="ph ph-arrow-right"></i>
                 </button>
                 <button class="btn-secondary poppins-semibold">
-                    Lihat Fitur
-                    <i class="ph ph-arrow-right"></i>
+                    <a href="#service" style="text-decoration: none; color: inherit;">
+                        Lihat Fitur
+                        <i class="ph ph-arrow-right"></i>
+                    </a>
                 </button>
             </div>
             <div class="box-service">
